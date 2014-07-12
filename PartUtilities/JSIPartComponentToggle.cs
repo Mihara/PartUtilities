@@ -114,7 +114,7 @@ namespace JSIPartUtilities
 			if (!startupComplete)
 				return;
 			foreach (string componentText in componentList) {
-				ToggleState (part, componentText, componentIsEnabled, controlRendering, controlColliders);
+				SetState (part, componentText, componentIsEnabled, controlRendering, controlColliders);
 			}
 			if (componentIsEnabled) {
 				Events ["JSIGuiEnableComponent"].guiActive = false;
@@ -135,7 +135,7 @@ namespace JSIPartUtilities
 			}
 		}
 
-		private static void ToggleState (Part thatPart, string targetName, bool state, bool controlRendering, bool controlColliders)
+		private static void SetState (Part thatPart, string targetName, bool state, bool controlRendering, bool controlColliders)
 		{
 			Component thatComponent = thatPart.FindModelComponent<Component> (targetName);
 			if (controlRendering) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace JSIPartUtilities
 {
 
@@ -50,8 +51,6 @@ namespace JSIPartUtilities
 				JUtil.LogMessage (this, "Controlling PartModule named {0}, {1}", controlledModule.ClassName, inverted ? "inverted" : "regular");
 				break;
 			}
-            
-            
 		}
 
 		public void SetState (Part thatPart, bool newstate)

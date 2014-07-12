@@ -7,10 +7,12 @@ namespace JSIPartUtilities
 	public class JSIAnimationTracker: PartModule
 	{
 		[KSPField]
-		public int moduleIndexToTrack = 1000;
+		public string animationName = string.Empty;
 
-		[KSPField (isPersistant = true)]
-		public bool actuatorState = false;
+		[KSPField]
+		public float maxTrigger = 1.1f;
+		[KSPField]
+		public float minTrigger = 0.8f;
 
 		[KSPField]
 		public string componentToggles = string.Empty;
@@ -18,41 +20,30 @@ namespace JSIPartUtilities
 		[KSPField]
 		public string moduleToggles = string.Empty;
 
-		private ModuleAnimateGeneric thatAnimator = null;
 		private List<Actuator> actuators = new List<Actuator> ();
+		private Animation trackedAnimation;
+		private bool actuatorState;
 
 		public override void OnStart (PartModule.StartState state)
 		{
-			var animators = new List<ModuleAnimateGeneric> ();
-			foreach (PartModule thatModule in part.Modules) {
-				var thisAnimator = thatModule as ModuleAnimateGeneric;
-				if (thisAnimator != null) {
-					animators.Add (thisAnimator);
-				}
-			}
-			if (moduleIndexToTrack < animators.Count) {
-				thatAnimator = animators [moduleIndexToTrack];
-			} else {
-				Debug.LogError (string.Format ("Could not find ModuleAnimateGeneric number {0} in part {1}", moduleIndexToTrack, part.name));
+			trackedAnimation = part.FindModelAnimators (animationName) [0];
+			if (trackedAnimation == null) {
+				JUtil.LogErrorMessage (this, "Could not find animation named '{0}' to track.", animationName);
 				Destroy (this);
 			}
-
 			// Bloody Squad and their ConfigNodes that never work properly!
-			foreach (string actuatorConfig in componentToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-				try {
+			try {
+				foreach (string actuatorConfig in componentToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
 					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartComponent, part));
-				} catch {
-					JUtil.LogErrorMessage (this, "Please check your configuration.");
 				}
-			}
-			foreach (string actuatorConfig in moduleToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-				try {
+				foreach (string actuatorConfig in moduleToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
 					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartModule, part));
-				} catch {
-					JUtil.LogErrorMessage (this, "Please check your configuration.");
 				}
+			} catch {
+				JUtil.LogErrorMessage (this, "Please check your configuration.");
+				Destroy (this);
 			}
-
+			actuatorState = GetAnimationState ();
 			LoopThroughActuators (actuatorState);
 		}
 
@@ -64,13 +55,19 @@ namespace JSIPartUtilities
 			}
 		}
 
+		private bool GetAnimationState ()
+		{
+			return trackedAnimation [animationName].normalizedTime >= minTrigger && trackedAnimation [animationName].normalizedTime <= maxTrigger;
+		}
+
 		public override void OnUpdate ()
 		{
-			if (HighLogic.LoadedSceneIsFlight && thatAnimator != null) {
-				bool newstate = thatAnimator.animSwitch && thatAnimator.status == "Locked";
+			if (trackedAnimation != null) {
+				bool newstate = GetAnimationState ();
 				if (newstate != actuatorState) {
 					LoopThroughActuators (newstate);
 				}
+
 			}
 		}
 	}
