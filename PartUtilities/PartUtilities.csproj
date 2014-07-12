@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C55A97E7-9D9B-46D0-9121-8A0D80EA76D3}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>PartUtilities</RootNamespace>
+    <RootNamespace>JSIPartUtilities</RootNamespace>
     <AssemblyName>PartUtilities</AssemblyName>
     <CodePage>65001</CodePage>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSIPartComponentToggle.cs" />
+    <Compile Include="UtilityFunctions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
