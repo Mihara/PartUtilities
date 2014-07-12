@@ -10,12 +10,27 @@ namespace JSIPartUtilities
 		public string componentName = string.Empty;
 		[KSPField (isPersistant = true)]
 		public bool componentIsEnabled = true;
+
+		[KSPField]
+		public string moduleID = string.Empty;
+
+		[KSPField]
+		public bool controlRendering = true;
+		[KSPField]
+		public bool controlColliders = true;
+
 		[KSPField]
 		public bool activeInEditor = true;
 		[KSPField]
 		public bool activeInFlight = true;
 		[KSPField]
 		public bool activeWhenUnfocused = true;
+		[KSPField]
+		public float unfocusedActivationRange = 10;
+
+		[KSPField]
+		public bool externalToEVAOnly = false;
+
 		[KSPField]
 		public string enableMenuString = string.Empty;
 		[KSPField]
@@ -36,39 +51,57 @@ namespace JSIPartUtilities
 				}
 			}
 			JUtil.LogMessage (this, "Active in part {0}, handling {1} components", part.name, componentList.Length);
-			LoopComponents ();
-			Events ["GuiToggleComponent"].guiActive = activeInFlight;
-			Events ["GuiToggleComponent"].guiActiveEditor = activeInEditor;
-			Events ["GuiToggleComponent"].guiActiveUnfocused = activeWhenUnfocused;
+
+			Events ["JSIGuiToggleComponent"].guiActive = activeInFlight;
+			Events ["JSIGuiToggleComponent"].guiActiveEditor = activeInEditor;
+			Events ["JSIGuiToggleComponent"].guiActiveUnfocused = activeWhenUnfocused;
+
+			Events ["JSIGuiToggleComponent"].externalToEVAOnly = externalToEVAOnly;
+			Events ["JSIGuiEnableComponent"].externalToEVAOnly = externalToEVAOnly;
+			Events ["JSIGuiDisableComponent"].externalToEVAOnly = externalToEVAOnly;
+
+			Events ["JSIGuiToggleComponent"].unfocusedRange = unfocusedActivationRange;
+			Events ["JSIGuiEnableComponent"].unfocusedRange = unfocusedActivationRange;
+			Events ["JSIGuiDisableComponent"].unfocusedRange = unfocusedActivationRange;
+
 			if (!string.IsNullOrEmpty (enableMenuString)) {
-				Events ["GuiEnableComponent"].guiName = enableMenuString;
+				Events ["JSIGuiEnableComponent"].guiName = enableMenuString;
 			}
 			if (!string.IsNullOrEmpty (disableMenuString)) {
-				Events ["GuiDisableComponent"].guiName = disableMenuString;
+				Events ["JSIGuiDisableComponent"].guiName = disableMenuString;
 			}
 			if (!string.IsNullOrEmpty (toggleMenuString)) {
-				Events ["GuiToggleComponent"].guiName = toggleMenuString;
+				Events ["JSIGuiToggleComponent"].guiName = toggleMenuString;
 			}
 
+			LoopComponents ();
 		}
 
+		[KSPEvent (guiActive = false, guiActiveEditor = false)]
+		public void JSIComponentToggle (BaseEventData data)
+		{
+			if (data.GetString ("moduleID") == moduleID) {
+				componentIsEnabled = data.GetBool ("state");
+				LoopComponents ();
+			}
+		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Enable component")]
-		public void GuiEnableComponent ()
+		public void JSIGuiEnableComponent ()
 		{
 			componentIsEnabled = true;
 			LoopComponents ();
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Disable component")]
-		public void GuiDisableComponent ()
+		public void JSIGuiDisableComponent ()
 		{
 			componentIsEnabled = false;
 			LoopComponents ();
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Toggle component")]
-		public void GuiToggleComponent ()
+		public void JSIGuiToggleComponent ()
 		{
 			componentIsEnabled = !componentIsEnabled;
 			LoopComponents ();
@@ -77,35 +110,39 @@ namespace JSIPartUtilities
 		private void LoopComponents ()
 		{
 			foreach (string componentText in componentList) {
-				ToggleState (part, componentText, componentIsEnabled);
+				ToggleState (part, componentText, componentIsEnabled, controlRendering, controlColliders);
 			}
 			if (componentIsEnabled) {
-				Events ["GuiEnableComponent"].guiActive = false;
-				Events ["GuiEnableComponent"].guiActiveEditor = false;
-				Events ["GuiEnableComponent"].guiActiveUnfocused = false;
+				Events ["JSIGuiEnableComponent"].guiActive = false;
+				Events ["JSIGuiEnableComponent"].guiActiveEditor = false;
+				Events ["JSIGuiEnableComponent"].guiActiveUnfocused = false;
 
-				Events ["GuiDisableComponent"].guiActive |= activeInFlight;
-				Events ["GuiDisableComponent"].guiActiveEditor |= activeInEditor;
-				Events ["GuiDisableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
+				Events ["JSIGuiDisableComponent"].guiActive |= activeInFlight;
+				Events ["JSIGuiDisableComponent"].guiActiveEditor |= activeInEditor;
+				Events ["JSIGuiDisableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
 			} else {
-				Events ["GuiDisableComponent"].guiActive = false;
-				Events ["GuiDisableComponent"].guiActiveEditor = false;
-				Events ["GuiDisableComponent"].guiActiveUnfocused = false;
+				Events ["JSIGuiDisableComponent"].guiActive = false;
+				Events ["JSIGuiDisableComponent"].guiActiveEditor = false;
+				Events ["JSIGuiDisableComponent"].guiActiveUnfocused = false;
 
-				Events ["GuiEnableComponent"].guiActive |= activeInFlight;
-				Events ["GuiEnableComponent"].guiActiveEditor |= activeInEditor;
-				Events ["GuiEnableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
+				Events ["JSIGuiEnableComponent"].guiActive |= activeInFlight;
+				Events ["JSIGuiEnableComponent"].guiActiveEditor |= activeInEditor;
+				Events ["JSIGuiEnableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
 			}
 		}
 
-		private static void ToggleState (Part thatPart, string targetName, bool state)
+		private static void ToggleState (Part thatPart, string targetName, bool state, bool controlRendering, bool controlColliders)
 		{
 			Component thatComponent = thatPart.FindModelComponent<Component> (targetName);
-			foreach (Renderer thatRenderer in thatComponent.GetComponentsInChildren<Renderer>()) {
-				thatRenderer.enabled = state;
+			if (controlRendering) {
+				foreach (Renderer thatRenderer in thatComponent.GetComponentsInChildren<Renderer>()) {
+					thatRenderer.enabled = state;
+				}
 			}
-			foreach (Collider thatCollider in thatComponent.GetComponentsInChildren<Collider>()) {
-				thatCollider.enabled = state;
+			if (controlColliders) {
+				foreach (Collider thatCollider in thatComponent.GetComponentsInChildren<Collider>()) {
+					thatCollider.enabled = state;
+				}
 			}
 		}
 	}
