@@ -6,7 +6,7 @@
     <ProjectGuid>{C55A97E7-9D9B-46D0-9121-8A0D80EA76D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>JSIPartUtilities</RootNamespace>
-    <AssemblyName>PartUtilities</AssemblyName>
+    <AssemblyName>JSIPartUtilities</AssemblyName>
     <CodePage>65001</CodePage>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
