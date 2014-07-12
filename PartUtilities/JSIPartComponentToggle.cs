@@ -39,6 +39,7 @@ namespace JSIPartUtilities
 		public string toggleMenuString = string.Empty;
 
 		private string[] componentList;
+		private bool startupComplete;
 
 		public override void OnStart (PartModule.StartState state)
 		{
@@ -75,6 +76,7 @@ namespace JSIPartUtilities
 			}
 
 			LoopComponents ();
+			startupComplete = true;
 		}
 
 		[KSPEvent (guiActive = false, guiActiveEditor = false)]
@@ -109,6 +111,8 @@ namespace JSIPartUtilities
 
 		private void LoopComponents ()
 		{
+			if (!startupComplete)
+				return;
 			foreach (string componentText in componentList) {
 				ToggleState (part, componentText, componentIsEnabled, controlRendering, controlColliders);
 			}
