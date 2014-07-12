@@ -12,6 +12,12 @@ namespace JSIPartUtilities
 		[KSPField (isPersistant = true)]
 		public bool actuatorState = false;
 
+		[KSPField]
+		public string componentToggles = string.Empty;
+        
+		[KSPField]
+		public string moduleToggles = string.Empty;
+
 		private ModuleAnimateGeneric thatAnimator = null;
 		private List<Actuator> actuators = new List<Actuator> ();
 
@@ -31,15 +37,23 @@ namespace JSIPartUtilities
 				Destroy (this);
 			}
 
-			LoopThroughActuators (actuatorState);
-		}
-
-		public override void OnLoad (ConfigNode node)
-		{
-			JUtil.LogMessage (this, "HasNode returns {0}, nodes count is {1}, values count is {2}", node.HasNode ("ACTUATOR"), node.CountNodes, node.CountValues);
-			foreach (ConfigNode thatActuator in node.GetNodes ("ACTUATOR")) {
-				actuators.Add (new Actuator (thatActuator));
+			// Bloody Squad and their ConfigNodes that never work properly!
+			foreach (string actuatorConfig in componentToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+				try {
+					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartComponent, part));
+				} catch {
+					JUtil.LogErrorMessage (this, "Please check your configuration.");
+				}
 			}
+			foreach (string actuatorConfig in moduleToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+				try {
+					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartModule, part));
+				} catch {
+					JUtil.LogErrorMessage (this, "Please check your configuration.");
+				}
+			}
+
+			LoopThroughActuators (actuatorState);
 		}
 
 		private void LoopThroughActuators (bool state)
