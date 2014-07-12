@@ -23,7 +23,7 @@ namespace JSIPartUtilities
 			string remainder;
 			if (configData.StartsWith ("!", StringComparison.Ordinal)) {
 				inverted = true;
-				remainder = configData.Substring (1);
+				remainder = configData.Substring (1).Trim();
 			} else {
 				inverted = false;
 				remainder = configData;
