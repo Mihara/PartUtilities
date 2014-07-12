@@ -8,13 +8,12 @@ namespace JSIPartUtilities
 	{
 		[KSPField]
 		public int moduleIndexToTrack = 1000;
-		[KSPField]
-		public string moduleID = string.Empty;
 
 		[KSPField (isPersistant = true)]
 		public bool actuatorState = false;
 
 		private ModuleAnimateGeneric thatAnimator = null;
+		private List<Actuator> actuators = new List<Actuator> ();
 
 		public override void OnStart (PartModule.StartState state)
 		{
@@ -32,17 +31,23 @@ namespace JSIPartUtilities
 				Destroy (this);
 			}
 
-			Debug.Log (string.Format ("Animation in part {0} will control the activity of PartComponentToggle with moduleID '{1}'", part.name, moduleID));
-			SetActuator (actuatorState);
+			LoopThroughActuators (actuatorState);
 		}
 
-		private void SetActuator (bool newstate)
+		public override void OnLoad (ConfigNode node)
 		{
-			actuatorState = newstate;
-			var eventData = new BaseEventData (BaseEventData.Sender.USER);
-			eventData.Set ("moduleID", moduleID);
-			eventData.Set ("state", newstate);
-			part.SendEvent ("JSIComponentToggle", eventData);
+			JUtil.LogMessage (this, "HasNode returns {0}, nodes count is {1}, values count is {2}", node.HasNode ("ACTUATOR"), node.CountNodes, node.CountValues);
+			foreach (ConfigNode thatActuator in node.GetNodes ("ACTUATOR")) {
+				actuators.Add (new Actuator (thatActuator));
+			}
+		}
+
+		private void LoopThroughActuators (bool state)
+		{
+			actuatorState = state;
+			foreach (Actuator thatActuator in actuators) {
+				thatActuator.SetState (part, state);
+			}
 		}
 
 		public override void OnUpdate ()
@@ -50,7 +55,7 @@ namespace JSIPartUtilities
 			if (HighLogic.LoadedSceneIsFlight && thatAnimator != null) {
 				bool newstate = thatAnimator.animSwitch && thatAnimator.status == "Locked";
 				if (newstate != actuatorState) {
-					SetActuator (newstate);
+					LoopThroughActuators (newstate);
 				}
 			}
 		}

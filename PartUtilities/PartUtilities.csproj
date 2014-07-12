@@ -46,6 +46,7 @@
     <Compile Include="JSIPartComponentToggle.cs" />
     <Compile Include="UtilityFunctions.cs" />
     <Compile Include="JSIAnimationTracker.cs" />
+    <Compile Include="Actuator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
