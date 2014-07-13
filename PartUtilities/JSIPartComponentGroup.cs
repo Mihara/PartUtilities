@@ -24,6 +24,11 @@ namespace JSIPartUtilities
 		public float unfocusedActivationRange = 10;
 
 		[KSPField]
+		public bool showToggleOption = true;
+		[KSPField]
+		public bool showEnableDisableOption = true;
+
+		[KSPField]
 		public bool externalToEVAOnly = false;
 
 		[KSPField]
@@ -86,6 +91,13 @@ namespace JSIPartUtilities
 				Events ["JSIGuiDisableComponents"].guiActiveUnfocused = false;
 			}
 
+			if (!showToggleOption) {
+				Events ["JSIGuiToggleComponents"].active = false;
+				Events ["JSIGuiToggleComponents"].guiActive = false;
+				Events ["JSIGuiToggleComponents"].guiActiveEditor = false;
+				Events ["JSIGuiToggleComponents"].guiActiveUnfocused = false;
+			}
+
 			LoopThroughActuators (areComponentsEnabled);
 		}
 
@@ -117,7 +129,7 @@ namespace JSIPartUtilities
 				thatActuator.SetState (part, state);
 			}
 
-			if (state) {
+			if (state && showEnableDisableOption) {
 				Events ["JSIGuiEnableComponents"].active = false;
 
 				Events ["JSIGuiEnableComponents"].guiActive = false;
