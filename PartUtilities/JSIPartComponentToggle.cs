@@ -137,7 +137,7 @@ namespace JSIPartUtilities
 			}
 			if (showEnableDisableOption) {
 				if (componentIsEnabled) {
-					ShutdownEvent ("JSIGuiEnsableComponent");
+					ShutdownEvent ("JSIGuiEnableComponent");
 
 					Events ["JSIGuiDisableComponent"].active = true;
 
