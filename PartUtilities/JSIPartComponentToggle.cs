@@ -146,11 +146,17 @@ namespace JSIPartUtilities
 		{
 			Component thatComponent = thatPart.FindModelComponent<Component> (targetName);
 			if (controlRendering) {
+				if (thatComponent.renderer != null) {
+					thatComponent.renderer.enabled = state;
+				}
 				foreach (Renderer thatRenderer in thatComponent.GetComponentsInChildren<Renderer>()) {
 					thatRenderer.enabled = state;
 				}
 			}
 			if (controlColliders) {
+				if (thatComponent.collider != null) {
+					thatComponent.collider.enabled = state;
+				}
 				foreach (Collider thatCollider in thatComponent.GetComponentsInChildren<Collider>()) {
 					thatCollider.enabled = state;
 				}
