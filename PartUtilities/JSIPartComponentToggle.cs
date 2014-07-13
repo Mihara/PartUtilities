@@ -117,18 +117,25 @@ namespace JSIPartUtilities
 				SetState (part, componentText, componentIsEnabled, controlRendering, controlColliders);
 			}
 			if (componentIsEnabled) {
+				Events ["JSIGuiEnableComponent"].active = false;
+
 				Events ["JSIGuiEnableComponent"].guiActive = false;
 				Events ["JSIGuiEnableComponent"].guiActiveEditor = false;
 				Events ["JSIGuiEnableComponent"].guiActiveUnfocused = false;
+
+				Events ["JSIGuiDisableComponent"].active = true;
 
 				Events ["JSIGuiDisableComponent"].guiActive |= activeInFlight;
 				Events ["JSIGuiDisableComponent"].guiActiveEditor |= activeInEditor;
 				Events ["JSIGuiDisableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
 			} else {
+				Events ["JSIGuiDisableComponent"].active = false;
+
 				Events ["JSIGuiDisableComponent"].guiActive = false;
 				Events ["JSIGuiDisableComponent"].guiActiveEditor = false;
 				Events ["JSIGuiDisableComponent"].guiActiveUnfocused = false;
 
+				Events ["JSIGuiEnableComponent"].active = true;
 				Events ["JSIGuiEnableComponent"].guiActive |= activeInFlight;
 				Events ["JSIGuiEnableComponent"].guiActiveEditor |= activeInEditor;
 				Events ["JSIGuiEnableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
