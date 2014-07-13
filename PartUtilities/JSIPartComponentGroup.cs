@@ -6,7 +6,7 @@ namespace JSIPartUtilities
 	public class JSIPartComponentGroup: PartModule
 	{
 
-		[KSPField]
+		[KSPField (isPersistant = true)]
 		public bool areComponentsEnabled;
 
 		[KSPField]
