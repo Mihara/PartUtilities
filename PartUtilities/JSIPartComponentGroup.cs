@@ -74,11 +74,16 @@ namespace JSIPartUtilities
 			}
 
 			if (areComponentsEnabled) {
-				Events ["JSIGuiEnableComponent"].active = false;
-				Events ["JSIGuiDisableComponent"].active = true;
+				Events ["JSIGuiEnableComponents"].active = false;
+				Events ["JSIGuiEnableComponents"].guiActive = false;
+				Events ["JSIGuiEnableComponents"].guiActiveEditor = false;
+				Events ["JSIGuiEnableComponents"].guiActiveUnfocused = false;
+
 			} else {
-				Events ["JSIGuiEnableComponent"].active = true;
-				Events ["JSIGuiDisableComponent"].active = false;
+				Events ["JSIGuiDisableComponents"].active = false;
+				Events ["JSIGuiDisableComponents"].guiActive = false;
+				Events ["JSIGuiDisableComponents"].guiActiveEditor = false;
+				Events ["JSIGuiDisableComponents"].guiActiveUnfocused = false;
 			}
 
 			LoopThroughActuators (areComponentsEnabled);

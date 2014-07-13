@@ -77,10 +77,15 @@ namespace JSIPartUtilities
 
 			if (componentIsEnabled) {
 				Events ["JSIGuiEnableComponent"].active = false;
-				Events ["JSIGuiDisableComponent"].active = true;
+				Events ["JSIGuiEnableComponent"].guiActive = false;
+				Events ["JSIGuiEnableComponent"].guiActiveEditor = false;
+				Events ["JSIGuiEnableComponent"].guiActiveUnfocused = false;
+
 			} else {
-				Events ["JSIGuiEnableComponent"].active = true;
 				Events ["JSIGuiDisableComponent"].active = false;
+				Events ["JSIGuiDisableComponent"].guiActive = false;
+				Events ["JSIGuiDisableComponent"].guiActiveEditor = false;
+				Events ["JSIGuiDisableComponent"].guiActiveUnfocused = false;
 			}
 
 			LoopComponents ();
