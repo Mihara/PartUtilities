@@ -16,10 +16,11 @@ using System.Runtime.CompilerServices;
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
 // Version number for linking is 0.0.0.1
-[assembly: AssemblyVersion ("0.0.0.1")]
+[assembly: AssemblyVersion ("0.0.0.2")]
 // Build number is also 0.0.0.1
-[assembly: AssemblyFileVersion("0.0.0.1")]
+[assembly: AssemblyFileVersion("0.0.0.2")]
 
+// Number for KSP Assembly linking is the same foreva.
 [assembly: KSPAssembly("JSIPartUtilities", 0, 1)]
 
 // The following attributes are used to specify the signing key for the assembly,
