@@ -75,6 +75,14 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponent"].guiName = toggleMenuString;
 			}
 
+			if (componentIsEnabled) {
+				Events ["JSIGuiEnableComponent"].active = false;
+				Events ["JSIGuiDisableComponent"].active = true;
+			} else {
+				Events ["JSIGuiEnableComponent"].active = true;
+				Events ["JSIGuiDisableComponent"].active = false;
+			}
+
 			LoopComponents ();
 			startupComplete = true;
 		}
