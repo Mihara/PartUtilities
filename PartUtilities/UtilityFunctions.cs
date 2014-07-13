@@ -18,13 +18,6 @@ namespace JSIPartUtilities
 			Debug.LogError (String.Format (caller.GetType ().Name + ": " + line, list));
 		}
 
-		public static void ShutdownEvent (string name, BaseEventList Events)
-		{
-			Events [name].active = false;
-			Events [name].guiActive = false;
-			Events [name].guiActiveEditor = false;
-			Events [name].guiActiveUnfocused = false;
-		}
 	}
 }
 

@@ -79,18 +79,18 @@ namespace JSIPartUtilities
 			}
 
 			if (areComponentsEnabled) {
-				JUtil.ShutdownEvent ("JSIGuiEnableComponents", Events);
+				ShutdownEvent ("JSIGuiEnableComponents");
 			} else {
-				JUtil.ShutdownEvent ("JSIGuiDisableComponents", Events);
+				ShutdownEvent ("JSIGuiDisableComponents");
 			}
 
 			if (!showToggleOption) {
-				JUtil.ShutdownEvent ("JSIGuiToggleComponents", Events);
+				ShutdownEvent ("JSIGuiToggleComponents");
 			}
 
 			if (!showEnableDisableOption) {
-				JUtil.ShutdownEvent ("JSIGuiEnableComponents", Events);
-				JUtil.ShutdownEvent ("JSIGuiDisableComponents", Events);
+				ShutdownEvent ("JSIGuiEnableComponents");
+				ShutdownEvent ("JSIGuiDisableComponents");
 			}
 
 			LoopThroughActuators (areComponentsEnabled);
@@ -127,7 +127,7 @@ namespace JSIPartUtilities
 			if (showEnableDisableOption) {
 				if (state) {
 
-					JUtil.ShutdownEvent ("JSIGuiEnableComponents", Events);
+					ShutdownEvent ("JSIGuiEnableComponents");
 
 					Events ["JSIGuiDisableComponents"].active = true;
 
@@ -136,7 +136,7 @@ namespace JSIPartUtilities
 					Events ["JSIGuiDisableComponents"].guiActiveUnfocused |= activeWhenUnfocused;
 				} else {
 
-					JUtil.ShutdownEvent ("JSIGuiDisableComponents", Events);
+					ShutdownEvent ("JSIGuiDisableComponents");
 
 					Events ["JSIGuiEnableComponents"].active = true;
 					Events ["JSIGuiEnableComponents"].guiActive |= activeInFlight;
@@ -144,6 +144,14 @@ namespace JSIPartUtilities
 					Events ["JSIGuiEnableComponents"].guiActiveUnfocused |= activeWhenUnfocused;
 				}
 			}
+		}
+
+		private void ShutdownEvent (string eventName)
+		{
+			Events [eventName].active = false;
+			Events [eventName].guiActive = false;
+			Events [eventName].guiActiveEditor = false;
+			Events [eventName].guiActiveUnfocused = false;
 		}
 
 	}

@@ -81,17 +81,17 @@ namespace JSIPartUtilities
 			}
 
 			if (componentIsEnabled) {
-				JUtil.ShutdownEvent ("JSIGuiEnableComponent", Events);
+				ShutdownEvent ("JSIGuiEnableComponent");
 			} else {
-				JUtil.ShutdownEvent ("JSIGuiDisableComponent", Events);
+				ShutdownEvent ("JSIGuiDisableComponent");
 			}
 
 			if (!showToggleOption) {
-				JUtil.ShutdownEvent ("JSIGuiToggleComponent", Events);
+				ShutdownEvent ("JSIGuiToggleComponent");
 			}
 			if (!showEnableDisableOption) {
-				JUtil.ShutdownEvent ("JSIGuiEnableComponent", Events);
-				JUtil.ShutdownEvent ("JSIGuiDisableComponent", Events);
+				ShutdownEvent ("JSIGuiEnableComponent");
+				ShutdownEvent ("JSIGuiDisableComponent");
 			}
 
 			LoopComponents ();
@@ -137,7 +137,7 @@ namespace JSIPartUtilities
 			}
 			if (showEnableDisableOption) {
 				if (componentIsEnabled) {
-					JUtil.ShutdownEvent ("JSIGuiEnsableComponent", Events);
+					ShutdownEvent ("JSIGuiEnsableComponent");
 
 					Events ["JSIGuiDisableComponent"].active = true;
 
@@ -146,7 +146,7 @@ namespace JSIPartUtilities
 					Events ["JSIGuiDisableComponent"].guiActiveUnfocused |= activeWhenUnfocused;
 				} else {
 
-					JUtil.ShutdownEvent ("JSIGuiDisableComponent", Events);
+					ShutdownEvent ("JSIGuiDisableComponent");
 
 					Events ["JSIGuiEnableComponent"].active = true;
 					Events ["JSIGuiEnableComponent"].guiActive |= activeInFlight;
@@ -175,6 +175,14 @@ namespace JSIPartUtilities
 					thatCollider.enabled = state;
 				}
 			}
+		}
+
+		private void ShutdownEvent (string eventName)
+		{
+			Events [eventName].active = false;
+			Events [eventName].guiActive = false;
+			Events [eventName].guiActiveEditor = false;
+			Events [eventName].guiActiveUnfocused = false;
 		}
 	}
 }
