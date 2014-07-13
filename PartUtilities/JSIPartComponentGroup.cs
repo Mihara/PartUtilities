@@ -7,7 +7,13 @@ namespace JSIPartUtilities
 	{
 
 		[KSPField (isPersistant = true)]
-		public bool areComponentsEnabled;
+		public bool currentState;
+
+		[KSPField]
+		public bool areComponentsEnabled = true;
+
+		[KSPField]
+		public bool persistAfterEditor = true;
 
 		[KSPField]
 		public string componentToggles = string.Empty;
@@ -78,7 +84,11 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponents"].guiName = toggleMenuString;
 			}
 
-			if (areComponentsEnabled) {
+			if (state == StartState.Editor || (!persistAfterEditor && state != StartState.Editor)) {
+				currentState = areComponentsEnabled;
+			}
+
+			if (currentState) {
 				ShutdownEvent ("JSIGuiEnableComponents");
 			} else {
 				ShutdownEvent ("JSIGuiDisableComponents");
@@ -93,28 +103,28 @@ namespace JSIPartUtilities
 				ShutdownEvent ("JSIGuiDisableComponents");
 			}
 
-			LoopThroughActuators (areComponentsEnabled);
+			LoopThroughActuators (currentState);
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Enable component group")]
 		public void JSIGuiEnableComponents ()
 		{
-			areComponentsEnabled = true;
-			LoopThroughActuators (areComponentsEnabled);
+			currentState = true;
+			LoopThroughActuators (currentState);
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Disable component group")]
 		public void JSIGuiDisableComponents ()
 		{
-			areComponentsEnabled = false;
-			LoopThroughActuators (areComponentsEnabled);
+			currentState = false;
+			LoopThroughActuators (currentState);
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Toggle component group")]
 		public void JSIGuiToggleComponents ()
 		{
-			areComponentsEnabled = !areComponentsEnabled;
-			LoopThroughActuators (areComponentsEnabled);
+			currentState = !currentState;
+			LoopThroughActuators (currentState);
 		}
 
 		private void LoopThroughActuators (bool state)

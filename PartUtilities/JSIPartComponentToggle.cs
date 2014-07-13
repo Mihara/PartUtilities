@@ -8,8 +8,15 @@ namespace JSIPartUtilities
 
 		[KSPField]
 		public string componentName = string.Empty;
-		[KSPField (isPersistant = true)]
+
+		[KSPField]
+		public bool persistAfterEditor = true;
+
+		[KSPField]
 		public bool componentIsEnabled = true;
+
+		[KSPField (isPersistant = true)]
+		public bool currentState = true;
 
 		[KSPField]
 		public string moduleID = string.Empty;
@@ -80,7 +87,11 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponent"].guiName = toggleMenuString;
 			}
 
-			if (componentIsEnabled) {
+			if (state == StartState.Editor || (!persistAfterEditor && state != StartState.Editor)) {
+				currentState = componentIsEnabled;
+			}
+
+			if (currentState) {
 				ShutdownEvent ("JSIGuiEnableComponent");
 			} else {
 				ShutdownEvent ("JSIGuiDisableComponent");
@@ -94,15 +105,15 @@ namespace JSIPartUtilities
 				ShutdownEvent ("JSIGuiDisableComponent");
 			}
 
-			LoopComponents ();
 			startupComplete = true;
+			LoopComponents ();
 		}
 
 		[KSPEvent (guiActive = false, guiActiveEditor = false)]
 		public void JSIComponentToggle (BaseEventData data)
 		{
 			if (data.GetString ("moduleID") == moduleID) {
-				componentIsEnabled = data.GetBool ("state");
+				currentState = data.GetBool ("state");
 				LoopComponents ();
 			}
 		}
@@ -110,21 +121,21 @@ namespace JSIPartUtilities
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Enable component")]
 		public void JSIGuiEnableComponent ()
 		{
-			componentIsEnabled = true;
+			currentState = true;
 			LoopComponents ();
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Disable component")]
 		public void JSIGuiDisableComponent ()
 		{
-			componentIsEnabled = false;
+			currentState = false;
 			LoopComponents ();
 		}
 
 		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Toggle component")]
 		public void JSIGuiToggleComponent ()
 		{
-			componentIsEnabled = !componentIsEnabled;
+			currentState = !currentState;
 			LoopComponents ();
 		}
 
@@ -133,10 +144,10 @@ namespace JSIPartUtilities
 			if (!startupComplete)
 				return;
 			foreach (string componentText in componentList) {
-				SetState (part, componentText, componentIsEnabled, controlRendering, controlColliders);
+				SetState (part, componentText, currentState, controlRendering, controlColliders);
 			}
 			if (showEnableDisableOption) {
-				if (componentIsEnabled) {
+				if (currentState) {
 					ShutdownEvent ("JSIGuiEnableComponent");
 
 					Events ["JSIGuiDisableComponent"].active = true;
