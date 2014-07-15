@@ -16,6 +16,9 @@ namespace JSIPartUtilities
 		public bool persistAfterEditor = true;
 
 		[KSPField]
+		public bool partLocal = true;
+
+		[KSPField]
 		public string componentToggles = string.Empty;
 		[KSPField]
 		public string moduleToggles = string.Empty;
@@ -131,7 +134,11 @@ namespace JSIPartUtilities
 		{
 			actuatorState = state;
 			foreach (Actuator thatActuator in actuators) {
-				thatActuator.SetState (part, state);
+				if (partLocal) {
+					thatActuator.SetState (part, state, part.gameObject);
+				} else {
+					thatActuator.SetState (part, state, null);
+				}
 			}
 
 			if (showEnableDisableOption) {

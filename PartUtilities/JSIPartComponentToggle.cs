@@ -113,8 +113,10 @@ namespace JSIPartUtilities
 		public void JSIComponentToggle (BaseEventData data)
 		{
 			if (data.GetString ("moduleID") == moduleID) {
-				currentState = data.GetBool ("state");
-				LoopComponents ();
+				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
+					currentState = data.GetBool ("state");
+					LoopComponents ();
+				}
 			}
 		}
 

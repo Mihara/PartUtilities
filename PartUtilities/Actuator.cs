@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace JSIPartUtilities
 {
@@ -53,7 +54,7 @@ namespace JSIPartUtilities
 			}
 		}
 
-		public void SetState (Part thatPart, bool newstate)
+		public void SetState (Part thatPart, bool newstate, GameObject objectLocal)
 		{
 			if (inverted)
 				newstate = !newstate;
@@ -64,6 +65,7 @@ namespace JSIPartUtilities
 				var eventData = new BaseEventData (BaseEventData.Sender.USER);
 				eventData.Set ("moduleID", moduleID);
 				eventData.Set ("state", newstate);
+				eventData.Set ("objectLocal", objectLocal);
 				thatPart.SendEvent ("JSIComponentToggle", eventData);
 				break;
 			case ActuatorType.PartModule:
