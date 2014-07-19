@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle ("JSIPartUtilities")]
 [assembly: AssemblyDescription ("JSIPartUtilities plugin for Kerbal Space Program")]
 [assembly: AssemblyProduct ("JSIPartUtilities")]
-[assembly: AssemblyCopyright ("Copyright ©2014 by Mihara and other contributors, released under the terms of GNU GPLv3")]
+[assembly: AssemblyCopyright ("Copyright ©2014 by Mihara, released under the terms of GNU GPLv3")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
