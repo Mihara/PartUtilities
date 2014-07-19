@@ -18,7 +18,7 @@ namespace JSIPartUtilities
 			Debug.LogError (String.Format (caller.GetType ().Name + ": " + line, list));
 		}
 
-		public static FlagBrowser CreateFlagSelectorWindow(object caller, FlagBrowser.FlagSelectedCallback selectedCallback, Callback dismissedCallback)
+		public static FlagBrowser CreateFlagSelectorWindow (object caller, FlagBrowser.FlagSelectedCallback selectedCallback, Callback dismissedCallback)
 		{
 			LogMessage (caller, "Creating flag selector window...");
 
