@@ -1,13 +1,15 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle ("JSIPartUtilities")]
-[assembly: AssemblyDescription ("JSIPartUtilities plugin for Kerbal Space Program")]
-[assembly: AssemblyProduct ("JSIPartUtilities")]
-[assembly: AssemblyCopyright ("Copyright ©2014 by Mihara, released under the terms of GNU GPLv3")]
+[assembly: AssemblyTitle("BumpBuildNumber")]
+[assembly: AssemblyDescription("A simple build utility to automate bumping build numbers without learning MSBuild tricks under Xamarin.")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("Eugene Medvedev")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -15,13 +17,7 @@ using System.Runtime.CompilerServices;
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
-// Version number for linking is 0.0.0.1
-[assembly: AssemblyVersion ("0.0.0.1")]
-// Build number is as current.
-[assembly: AssemblyFileVersion("0.0.0.10")]
-
-// Number for KSP Assembly linking is the same foreva.
-[assembly: KSPAssembly("JSIPartUtilities", 0, 1)]
+[assembly: AssemblyVersion("1.0.*")]
 
 // The following attributes are used to specify the signing key for the assembly,
 // if desired. See the Mono documentation for more information about signing.
