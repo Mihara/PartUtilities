@@ -26,13 +26,14 @@ namespace JSIPartUtilities
 					initialTexture = mat.material.GetTexture (textureLayer);
 				} else {
 					JUtil.LogMessage (this, "Flag transform '{0}' not found.", flagTransform);
+					Destroy (this);
 					return;
 				}
 				Events ["SelectFlag"].guiName = menuString;
 				ChangeFlag ();
 			} else {
 				JUtil.LogMessage (this, "Nothing to do, flag transform name is empty.");
-				Events ["SelectFlag"].guiActiveEditor = false;
+				Destroy (this);
 			}
 		}
 
