@@ -6,6 +6,8 @@ namespace JSIPartUtilities
 	{
 		[KSPField (isPersistant = true)]
 		public string selectedFlag = string.Empty;
+		[KSPField (isPersistant = true)]
+		public bool flagWasSelected = false;
 
 		[KSPField]
 		public string defaultFlag = string.Empty;
@@ -32,10 +34,8 @@ namespace JSIPartUtilities
 					return;
 				}
 
-				if (string.IsNullOrEmpty (selectedFlag) && !string.IsNullOrEmpty (defaultFlag)) {
-					if (GameDatabase.Instance.ExistsTexture (defaultFlag)) {
-						selectedFlag = defaultFlag;
-					}
+				if (!flagWasSelected && !string.IsNullOrEmpty (defaultFlag) && GameDatabase.Instance.ExistsTexture (defaultFlag)) {
+					selectedFlag = defaultFlag;
 				}
 
 				Events ["SelectFlag"].guiName = menuString;
@@ -59,6 +59,7 @@ namespace JSIPartUtilities
 			selectedFlag = selected.textureInfo.name;
 			ChangeFlag ();
 			Destroy (fb);
+			flagWasSelected = true;
 		}
 
 		public void FlagDismissed ()
