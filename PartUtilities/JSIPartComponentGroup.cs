@@ -22,6 +22,10 @@ namespace JSIPartUtilities
 		public string componentToggles = string.Empty;
 		[KSPField]
 		public string moduleToggles = string.Empty;
+		[KSPField]
+		public string textureToggles = string.Empty;
+		[KSPField]
+		public string shaderToggles = string.Empty;
 
 		[KSPField]
 		public bool activeInEditor = true;
@@ -59,6 +63,12 @@ namespace JSIPartUtilities
 				}
 				foreach (string actuatorConfig in moduleToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
 					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartModule, part));
+				}
+				foreach (string actuatorConfig in textureToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.TransformTexture, part));
+				}
+				foreach (string actuatorConfig in shaderToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.TransformShader, part));
 				}
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
