@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace JSIPartUtilities
 {
@@ -7,6 +6,9 @@ namespace JSIPartUtilities
 	{
 		[KSPField (isPersistant = true)]
 		public string selectedFlag = string.Empty;
+
+		[KSPField]
+		public string defaultFlag = string.Empty;
 		[KSPField]
 		public string flagTransform = string.Empty;
 		[KSPField]
@@ -29,6 +31,13 @@ namespace JSIPartUtilities
 					Destroy (this);
 					return;
 				}
+
+				if (string.IsNullOrEmpty (selectedFlag) && !string.IsNullOrEmpty (defaultFlag)) {
+					if (GameDatabase.Instance.ExistsTexture (defaultFlag)) {
+						selectedFlag = defaultFlag;
+					}
+				}
+
 				Events ["SelectFlag"].guiName = menuString;
 				ChangeFlag ();
 			} else {
