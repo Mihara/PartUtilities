@@ -55,6 +55,7 @@
     <Compile Include="JSIPartComponentGroup.cs" />
     <Compile Include="JSISelectableFlagDecal.cs" />
     <Compile Include="JSIReflaginator.cs" />
+    <Compile Include="JSIForbidIVAHere.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
