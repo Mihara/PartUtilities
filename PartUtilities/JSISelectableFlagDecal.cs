@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using System;
+using Contracts;
+using System.Collections.Generic;
 
 namespace JSIPartUtilities
 {
@@ -34,8 +37,32 @@ namespace JSIPartUtilities
 					return;
 				}
 
-				if (!flagWasSelected && !string.IsNullOrEmpty (defaultFlag) && GameDatabase.Instance.ExistsTexture (defaultFlag)) {
-					selectedFlag = defaultFlag;
+				if (!flagWasSelected && !string.IsNullOrEmpty (defaultFlag)) {
+					switch(defaultFlag) {
+					case "$RANDOM$":
+						var allFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Flag");
+						if (allFlags.Count > 0) {
+							defaultFlag = allFlags [UnityEngine.Random.Range (0, allFlags.Count - 1)].name;
+						}
+						break;
+					case "$SPONSOR$":
+						if (HighLogic.CurrentGame.Mode != Game.Modes.CAREER) {
+							// Other modes can't have contracts.
+							var agentURLs = new List<string> ();
+							foreach (Contract thatContract in ContractSystem.Instance.Contracts) {
+								agentURLs.Add (thatContract.Agent.LogoURL);
+							}
+							if (agentURLs.Count > 0) {
+								defaultFlag = agentURLs [UnityEngine.Random.Range (0, agentURLs.Count-1)];
+							}
+						}
+						break;
+					default:
+						if (GameDatabase.Instance.ExistsTexture (defaultFlag)) {
+							selectedFlag = defaultFlag;
+						}
+						break;
+					}
 				}
 
 				Events ["SelectFlag"].guiName = menuString;
