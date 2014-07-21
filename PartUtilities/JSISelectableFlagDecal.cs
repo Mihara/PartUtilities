@@ -40,7 +40,7 @@ namespace JSIPartUtilities
 				if (!flagWasSelected && !string.IsNullOrEmpty (defaultFlag)) {
 					switch(defaultFlag) {
 					case "$RANDOM$":
-						var allFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Flag");
+						var allFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Flags");
 						if (allFlags.Count > 0) {
 							defaultFlag = allFlags [UnityEngine.Random.Range (0, allFlags.Count - 1)].name;
 						}
