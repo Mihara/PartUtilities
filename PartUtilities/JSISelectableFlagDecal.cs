@@ -53,7 +53,12 @@ namespace JSIPartUtilities
 								agentURLs.Add (thatContract.Agent.LogoURL);
 							}
 							if (agentURLs.Count > 0) {
-								defaultFlag = agentURLs [UnityEngine.Random.Range (0, agentURLs.Count-1)];
+								defaultFlag = agentURLs [UnityEngine.Random.Range (0, agentURLs.Count - 1)];
+							}
+						} else {
+							var agencyFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Agencies");
+							if (agencyFlags.Count > 0) {
+								defaultFlag = agencyFlags [UnityEngine.Random.Range (0, agencyFlags.Count - 1)].name;
 							}
 						}
 						break;
