@@ -3,6 +3,28 @@ using UnityEngine;
 
 namespace JSIPartUtilities
 {
+
+	public class JSIPartUtilitiesRPMButtons : InternalModule
+	{
+
+		[KSPField]
+		public string partComponentID = string.Empty;
+
+		/// Controls a JSIPartComponentToggle which is part of JSIPartUtils.
+		/// Unfortunately it can't return a state.
+		public void ButtonTogglePartComponent (bool state)
+		{
+			if (!string.IsNullOrEmpty (partComponentID)) {
+				var eventData = new BaseEventData (BaseEventData.Sender.USER);
+				eventData.Set ("moduleID", partComponentID);
+				eventData.Set ("state", state);
+				eventData.Set ("objectLocal", part.gameObject);
+				part.SendEvent ("JSIComponentToggle", eventData);
+			}
+		}
+
+	}
+
 	public class JSIPartComponentToggle: PartModule, IPartCostModifier
 	{
 
