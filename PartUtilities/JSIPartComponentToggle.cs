@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace JSIPartUtilities
 {
-	public class JSIPartComponentToggle: PartModule
+	public class JSIPartComponentToggle: PartModule, IPartCostModifier
 	{
 
 		[KSPField]
@@ -11,6 +11,9 @@ namespace JSIPartUtilities
 
 		[KSPField]
 		public bool persistAfterEditor = true;
+
+		[KSPField]
+		public float costOfBeingEnabled = 0;
 
 		[KSPField]
 		public bool componentIsEnabled = true;
@@ -52,6 +55,15 @@ namespace JSIPartUtilities
 
 		private string[] componentList;
 		private bool startupComplete;
+
+		#region IPartCostModifier implementation
+
+		public float GetModuleCost ()
+		{
+			return currentState ? costOfBeingEnabled : 0;
+		}
+
+		#endregion
 
 		public override void OnStart (PartModule.StartState state)
 		{

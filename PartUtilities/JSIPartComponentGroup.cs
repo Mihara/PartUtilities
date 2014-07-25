@@ -13,6 +13,9 @@ namespace JSIPartUtilities
 		public bool areComponentsEnabled = true;
 
 		[KSPField]
+		public float costOfBeingEnabled = 0;
+
+		[KSPField]
 		public bool persistAfterEditor = true;
 
 		[KSPField]
@@ -54,6 +57,15 @@ namespace JSIPartUtilities
 
 		private List<Actuator> actuators = new List<Actuator> ();
 		private bool actuatorState;
+
+		#region IPartCostModifier implementation
+
+		public float GetModuleCost ()
+		{
+			return currentState ? costOfBeingEnabled : 0;
+		}
+
+		#endregion
 
 		public override void OnStart (PartModule.StartState state)
 		{
