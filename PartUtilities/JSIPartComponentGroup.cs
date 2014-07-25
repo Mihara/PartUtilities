@@ -31,6 +31,8 @@ namespace JSIPartUtilities
 		public string shaderToggles = string.Empty;
 		[KSPField]
 		public string numericToggles = string.Empty;
+		[KSPField]
+		public string managedResources = string.Empty;
 
 		[KSPField]
 		public bool activeInEditor = true;
@@ -86,6 +88,9 @@ namespace JSIPartUtilities
 				}
 				foreach (string actuatorConfig in numericToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
 					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.StraightParameter, part));
+				}
+				foreach (string actuatorConfig in managedResources.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.Resource, part));
 				}
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");

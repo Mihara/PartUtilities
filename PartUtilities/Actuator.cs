@@ -12,6 +12,7 @@ namespace JSIPartUtilities
 		TransformTexture,
 		TransformShader,
 		StraightParameter,
+		Resource,
 	}
 
 	public class Actuator
@@ -26,6 +27,10 @@ namespace JSIPartUtilities
 		private readonly float originalParameterValue;
 		private readonly float addToParameterWhenEnabled;
 		private readonly string nameOfParameter = string.Empty;
+		private readonly string resourceName = string.Empty;
+		private readonly float maxAmount = 0;
+
+		private PartResource resourcePointer;
 
 		private string[] knownStraightParameters = {
 			"mass",
@@ -123,6 +128,23 @@ namespace JSIPartUtilities
 					throw new ArgumentException ("Bad arguments.");
 				}
 				break;
+			case ActuatorType.Resource:
+				if (tokens.Length == 2) {
+					if (float.TryParse (tokens [1], out maxAmount)) {
+						bool found = false;
+						resourceName = tokens [0].Trim ();
+						foreach (PartResourceDefinition thatResource in PartResourceLibrary.Instance.resourceDefinitions) {
+							found |= thatResource.name == resourceName;
+						}
+						if (!found)
+							throw new ArgumentException ("Bad resource name.");
+					} else {
+						throw new ArgumentException ("Bad resource amount.");
+					}
+				} else {
+					throw new ArgumentException ("Bad arguments.");
+				}
+				break;
 			}
 		}
 
@@ -205,6 +227,23 @@ namespace JSIPartUtilities
 					SetParameter (nameOfParameter, thatPart, originalParameterValue + addToParameterWhenEnabled);
 				} else {
 					SetParameter (nameOfParameter, thatPart, originalParameterValue);
+				}
+				break;
+			case ActuatorType.Resource:
+				// We do not manipulate resource records out of the editor because fsckit.
+				if (HighLogic.LoadedSceneIsEditor) {
+					if (newstate && resourcePointer == null) {
+						var node = new ConfigNode ("RESOURCE");
+						node.AddValue ("name", resourceName);
+						node.AddValue ("amount", maxAmount);
+						node.AddValue ("maxAmount", maxAmount);
+						resourcePointer = thatPart.AddResource (node);
+						resourcePointer.enabled = true;
+					} 
+					if (!newstate && resourcePointer != null) {
+						thatPart.Resources.list.Remove (resourcePointer);
+						UnityEngine.Object.Destroy (resourcePointer);
+					}
 				}
 				break;
 			}
