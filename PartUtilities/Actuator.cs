@@ -243,6 +243,7 @@ namespace JSIPartUtilities
 					if (!newstate && resourcePointer != null) {
 						thatPart.Resources.list.Remove (resourcePointer);
 						UnityEngine.Object.Destroy (resourcePointer);
+						resourcePointer = null;
 					}
 				}
 				break;
