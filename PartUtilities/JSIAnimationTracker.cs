@@ -25,6 +25,8 @@ namespace JSIPartUtilities
 		public string textureToggles = string.Empty;
 		[KSPField]
 		public string shaderToggles = string.Empty;
+		[KSPField]
+		public string numericToggles = string.Empty;
 
 		private List<Actuator> actuators = new List<Actuator> ();
 		private Animation trackedAnimation;
@@ -50,6 +52,9 @@ namespace JSIPartUtilities
 				}
 				foreach (string actuatorConfig in shaderToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
 					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.TransformShader, part));
+				}
+				foreach (string actuatorConfig in numericToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.StraightParameter, part));
 				}
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
