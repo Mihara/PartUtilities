@@ -38,7 +38,7 @@ namespace JSIPartUtilities
 				}
 
 				if (!flagWasSelected && !string.IsNullOrEmpty (defaultFlag)) {
-					switch(defaultFlag) {
+					switch (defaultFlag) {
 					case "$RANDOM$":
 						var allFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Flags");
 						if (allFlags.Count > 0) {
@@ -50,7 +50,8 @@ namespace JSIPartUtilities
 							// Other modes can't have contracts.
 							var agentURLs = new List<string> ();
 							foreach (Contract thatContract in ContractSystem.Instance.Contracts) {
-								agentURLs.Add (thatContract.Agent.LogoURL);
+								if (!agentURLs.Contains (thatContract.Agent.LogoURL))
+									agentURLs.Add (thatContract.Agent.LogoURL);
 							}
 							if (agentURLs.Count > 0) {
 								defaultFlag = agentURLs [UnityEngine.Random.Range (0, agentURLs.Count - 1)];
