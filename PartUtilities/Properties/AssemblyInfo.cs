@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 // Version number for linking is 0.0.0.1
 [assembly: AssemblyVersion ("0.0.0.1")]
 // Build number is as current.
-[assembly: AssemblyFileVersion("0.0.0.43")]
+[assembly: AssemblyFileVersion("0.0.0.44")]
 
 // Number for KSP Assembly linking is the same foreva.
 [assembly: KSPAssembly("JSIPartUtilities", 0, 1)]

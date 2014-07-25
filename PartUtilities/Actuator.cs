@@ -10,7 +10,8 @@ namespace JSIPartUtilities
 		PartComponent,
 		PartModule,
 		TransformTexture,
-		TransformShader
+		TransformShader,
+		MaxTemp
 	}
 
 	public class Actuator
@@ -22,6 +23,8 @@ namespace JSIPartUtilities
 		private readonly Transform targetTransform;
 		private readonly string textureLayer = "_MainTex";
 		private readonly string falseString, trueString;
+		private readonly float originalMaxTemp;
+		private readonly float enabledMaxTemp;
 
 		public Actuator (string configData, ActuatorType creatingType, Part thatPart)
 		{
@@ -93,6 +96,15 @@ namespace JSIPartUtilities
 					throw new ArgumentException ("Bad arguments.");
 				}
 				break;
+			case ActuatorType.MaxTemp:
+				if (tokens.Length == 2) {
+					if (float.TryParse (tokens [1], out enabledMaxTemp)) {
+						originalMaxTemp = thatPart.maxTemp;
+					} else {
+						throw new ArgumentException ("Bad argument, maxTemp must be a float.");
+					}
+				}
+				break;
 			}
 		}
 
@@ -121,6 +133,9 @@ namespace JSIPartUtilities
 			case ActuatorType.TransformShader:
 				Renderer shm = targetTransform.GetComponent<Renderer> ();
 				shm.material.shader = Shader.Find (newstate ? trueString : falseString);
+				break;
+			case ActuatorType.MaxTemp:
+				thatPart.maxTemp = newstate ? enabledMaxTemp : originalMaxTemp;
 				break;
 			}
 		}
