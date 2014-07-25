@@ -32,6 +32,13 @@ namespace JSIPartUtilities
 		private Animation trackedAnimation;
 		private bool actuatorState;
 
+		private void ParseSet (string input, ActuatorType type)
+		{
+			foreach (string actuatorConfig in input.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
+				actuators.Add (new Actuator (actuatorConfig.Trim (), type, part));
+			}
+		}
+
 		public override void OnStart (PartModule.StartState state)
 		{
 			trackedAnimation = part.FindModelAnimators (animationName) [0];
@@ -41,21 +48,11 @@ namespace JSIPartUtilities
 			}
 			// Bloody Squad and their ConfigNodes that never work properly!
 			try {
-				foreach (string actuatorConfig in componentToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartComponent, part));
-				}
-				foreach (string actuatorConfig in moduleToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.PartModule, part));
-				}
-				foreach (string actuatorConfig in textureToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.TransformTexture, part));
-				}
-				foreach (string actuatorConfig in shaderToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.TransformShader, part));
-				}
-				foreach (string actuatorConfig in numericToggles.Split(new [] {'|'},StringSplitOptions.RemoveEmptyEntries)) {
-					actuators.Add (new Actuator (actuatorConfig.Trim (), ActuatorType.StraightParameter, part));
-				}
+				ParseSet (componentToggles, ActuatorType.PartComponent);
+				ParseSet (moduleToggles, ActuatorType.PartModule);
+				ParseSet (textureToggles, ActuatorType.TransformTexture);
+				ParseSet (shaderToggles, ActuatorType.TransformShader);
+				ParseSet (numericToggles, ActuatorType.StraightParameter);
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
 				Destroy (this);
