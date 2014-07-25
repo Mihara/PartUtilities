@@ -108,7 +108,7 @@ namespace JSIPartUtilities
 				}
 				break;
 			case ActuatorType.StraightParameter:
-				if (tokens.Length == 3) {
+				if (tokens.Length == 2) {
 					if (float.TryParse (tokens [1], out addToParameterWhenEnabled)) {
 						if (Array.IndexOf (knownStraightParameters, tokens [0].Trim ()) >= 0) {
 							nameOfParameter = tokens [0].Trim ();
