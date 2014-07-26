@@ -59,7 +59,7 @@ namespace JSIPartUtilities
 		public string toggleMenuString = string.Empty;
 
 
-		private List<Actuator> actuators = new List<Actuator> ();
+		private readonly List<Actuator> actuators = new List<Actuator> ();
 		private bool actuatorState;
 
 		#region IPartCostModifier implementation
