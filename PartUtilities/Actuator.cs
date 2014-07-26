@@ -257,10 +257,15 @@ namespace JSIPartUtilities
 							resourcePointer = thatPart.AddResource (node);
 							resourcePointer.enabled = true;
 						} 
-						if (!newstate && resourcePointer != null) {
-							thatPart.Resources.list.Remove (resourcePointer);
-							UnityEngine.Object.Destroy (resourcePointer);
-							resourcePointer = null;
+						if (!newstate) {
+							if (resourcePointer == null) {
+								resourcePointer = thatPart.Resources [resourceName];
+							}
+							if (resourcePointer != null) {
+								thatPart.Resources.list.Remove (resourcePointer);
+								UnityEngine.Object.Destroy (resourcePointer);
+								resourcePointer = null;
+							}
 						}
 					}
 					GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
