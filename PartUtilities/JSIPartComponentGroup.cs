@@ -120,9 +120,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiDisableComponents"].active = false;
 			}
 
-			if (!showToggleOption) {
-				Events ["JSIGuiToggleComponents"].active = false;
-			}
+			Events ["JSIGuiToggleComponents"].active &= showToggleOption;
 
 			if (!showEnableDisableOption) {
 				Events ["JSIGuiEnableComponents"].active = false;
