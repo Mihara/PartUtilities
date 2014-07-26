@@ -29,6 +29,7 @@ namespace JSIPartUtilities
 		private readonly string nameOfParameter = string.Empty;
 		private readonly string resourceName = string.Empty;
 		private readonly float maxAmount = 0;
+		private readonly bool resourceAlreadyExists;
 
 		private PartResource resourcePointer;
 
@@ -138,6 +139,7 @@ namespace JSIPartUtilities
 						}
 						if (!found)
 							throw new ArgumentException ("Bad resource name.");
+						resourceAlreadyExists |= thatPart.Resources [resourceName] != null;
 					} else {
 						throw new ArgumentException ("Bad resource amount.");
 					}
@@ -232,18 +234,31 @@ namespace JSIPartUtilities
 			case ActuatorType.Resource:
 				// We do not manipulate resource records out of the editor because fsckit.
 				if (HighLogic.LoadedSceneIsEditor) {
-					if (newstate && resourcePointer == null) {
-						var node = new ConfigNode ("RESOURCE");
-						node.AddValue ("name", resourceName);
-						node.AddValue ("amount", maxAmount);
-						node.AddValue ("maxAmount", maxAmount);
-						resourcePointer = thatPart.AddResource (node);
-						resourcePointer.enabled = true;
-					} 
-					if (!newstate && resourcePointer != null) {
-						thatPart.Resources.list.Remove (resourcePointer);
-						UnityEngine.Object.Destroy (resourcePointer);
-						resourcePointer = null;
+					if (resourceAlreadyExists) {
+						resourcePointer = thatPart.Resources [resourceName];
+						if (resourcePointer != null) {
+							if (newstate) {
+								resourcePointer.maxAmount += maxAmount;
+								resourcePointer.amount = resourcePointer.maxAmount;
+							} else {
+								resourcePointer.maxAmount -= maxAmount;
+								resourcePointer.amount = resourcePointer.maxAmount;
+							}
+						}
+					} else {
+						if (newstate && resourcePointer == null) {
+							var node = new ConfigNode ("RESOURCE");
+							node.AddValue ("name", resourceName);
+							node.AddValue ("amount", maxAmount);
+							node.AddValue ("maxAmount", maxAmount);
+							resourcePointer = thatPart.AddResource (node);
+							resourcePointer.enabled = true;
+						} 
+						if (!newstate && resourcePointer != null) {
+							thatPart.Resources.list.Remove (resourcePointer);
+							UnityEngine.Object.Destroy (resourcePointer);
+							resourcePointer = null;
+						}
 					}
 				}
 				break;
