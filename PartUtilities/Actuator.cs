@@ -232,26 +232,26 @@ namespace JSIPartUtilities
 			case ActuatorType.Resource:
 				// We do not manipulate resource records out of the editor because fsckit.
 				if (HighLogic.LoadedSceneIsEditor) {
-					if (newstate && resourcePointer == null) {
+					if (!newstate) {
+						if (resourcePointer == null) {
+							resourcePointer = thatPart.Resources [resourceName];
+						}
+						// We can, hopefully, avoid deleting the tank that this particular actuator did not create.
+						if (resourcePointer != null && resourcePointer.maxAmount == maxAmount) {
+							thatPart.Resources.list.Remove (resourcePointer);
+							UnityEngine.Object.Destroy (resourcePointer);
+							resourcePointer = null;
+						}
+					}
+					if (newstate && resourcePointer == null && thatPart.Resources [resourceName] == null) {
 						var node = new ConfigNode ("RESOURCE");
 						node.AddValue ("name", resourceName);
 						node.AddValue ("amount", maxAmount);
 						node.AddValue ("maxAmount", maxAmount);
 						resourcePointer = thatPart.AddResource (node);
 						resourcePointer.enabled = true;
-						GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
 					} 
-					if (!newstate) {
-						if (resourcePointer == null) {
-							resourcePointer = thatPart.Resources [resourceName];
-						}
-						if (resourcePointer != null) {
-							thatPart.Resources.list.Remove (resourcePointer);
-							UnityEngine.Object.Destroy (resourcePointer);
-							resourcePointer = null;
-							GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
-						}
-					}
+
 				}
 				break;
 			}

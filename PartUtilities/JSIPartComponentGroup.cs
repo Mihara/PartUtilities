@@ -157,7 +157,7 @@ namespace JSIPartUtilities
 		private void LoopThroughActuators (bool state)
 		{
 
-			if (HighLogic.LoadedSceneIsEditor && costOfBeingEnabled > 0) {
+			if (HighLogic.LoadedSceneIsEditor) {
 				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
 			}
 
