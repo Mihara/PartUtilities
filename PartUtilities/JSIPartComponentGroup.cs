@@ -153,6 +153,11 @@ namespace JSIPartUtilities
 
 		private void LoopThroughActuators (bool state)
 		{
+
+			if (HighLogic.LoadedSceneIsEditor) {
+				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
+			}
+
 			actuatorState = state;
 			foreach (Actuator thatActuator in actuators) {
 				if (partLocal) {

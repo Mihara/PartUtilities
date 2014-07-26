@@ -174,6 +174,11 @@ namespace JSIPartUtilities
 		{
 			if (!startupComplete)
 				return;
+
+			if (HighLogic.LoadedSceneIsEditor) {
+				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
+			}
+
 			foreach (string componentText in componentList) {
 				SetState (part, componentText, currentState, controlRendering, controlColliders);
 			}
