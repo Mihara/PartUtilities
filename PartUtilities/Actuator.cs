@@ -31,6 +31,8 @@ namespace JSIPartUtilities
 		private readonly float maxAmount = 0;
 		private readonly bool resourceAlreadyExists;
 
+		private bool resourceWasAdded;
+
 		private PartResource resourcePointer;
 
 		private string[] knownStraightParameters = {
@@ -240,12 +242,15 @@ namespace JSIPartUtilities
 					if (resourceAlreadyExists) {
 						resourcePointer = thatPart.Resources [resourceName];
 						if (resourcePointer != null) {
-							if (newstate) {
+							if (newstate && !resourceWasAdded) {
 								resourcePointer.maxAmount += maxAmount;
 								resourcePointer.amount = resourcePointer.maxAmount;
-							} else {
+								resourceWasAdded = true;
+							}
+							if (!newstate && resourceWasAdded) {
 								resourcePointer.maxAmount -= maxAmount;
 								resourcePointer.amount = resourcePointer.maxAmount;
+								resourceWasAdded = false;
 							}
 						}
 					} else {
