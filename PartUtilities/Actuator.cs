@@ -260,6 +260,7 @@ namespace JSIPartUtilities
 							resourcePointer = null;
 						}
 					}
+					GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
 				}
 				break;
 			}
