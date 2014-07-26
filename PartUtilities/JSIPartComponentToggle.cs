@@ -34,6 +34,9 @@ namespace JSIPartUtilities
 		[KSPField]
 		public bool persistAfterEditor = true;
 
+		[KSPField (isPersistant = true)]
+		public bool spawned;
+
 		[KSPField]
 		public float costOfBeingEnabled = 0;
 
@@ -117,7 +120,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponent"].guiName = toggleMenuString;
 			}
 
-			if (state == StartState.Editor || (!persistAfterEditor && state != StartState.Editor)) {
+			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
 				currentState = componentIsEnabled;
 			}
 

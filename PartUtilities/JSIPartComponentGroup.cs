@@ -9,6 +9,9 @@ namespace JSIPartUtilities
 		[KSPField (isPersistant = true)]
 		public bool currentState;
 
+		[KSPField (isPersistant = true)]
+		public bool spawned;
+
 		[KSPField]
 		public bool areComponentsEnabled = true;
 
@@ -110,8 +113,9 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponents"].guiName = toggleMenuString;
 			}
 
-			if (state == StartState.Editor || (!persistAfterEditor && state != StartState.Editor)) {
+			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
 				currentState = areComponentsEnabled;
+				//EditorDriver.StartupBehaviour != EditorDriver.StartupBehaviours.START_CLEAN
 			}
 
 			if (currentState) {
@@ -126,7 +130,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiEnableComponents"].active = false;
 				Events ["JSIGuiDisableComponents"].active = false;
 			}
-
+			spawned = true;
 			LoopThroughActuators (currentState);
 		}
 
