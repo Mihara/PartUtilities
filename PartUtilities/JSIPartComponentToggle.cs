@@ -175,7 +175,7 @@ namespace JSIPartUtilities
 			if (!startupComplete)
 				return;
 
-			if (HighLogic.LoadedSceneIsEditor) {
+			if (HighLogic.LoadedSceneIsEditor && costOfBeingEnabled > 0) {
 				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
 			}
 

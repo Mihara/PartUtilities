@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JSIPartUtilities
 {
-	public class JSIPartComponentGroup: PartModule
+	public class JSIPartComponentGroup: PartModule, IPartCostModifier
 	{
 
 		[KSPField (isPersistant = true)]
@@ -154,7 +154,7 @@ namespace JSIPartUtilities
 		private void LoopThroughActuators (bool state)
 		{
 
-			if (HighLogic.LoadedSceneIsEditor) {
+			if (HighLogic.LoadedSceneIsEditor && costOfBeingEnabled > 0) {
 				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
 			}
 
