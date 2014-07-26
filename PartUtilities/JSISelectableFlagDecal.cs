@@ -46,7 +46,7 @@ namespace JSIPartUtilities
 						}
 						break;
 					case "$SPONSOR$":
-						if (HighLogic.CurrentGame.Mode != Game.Modes.CAREER) {
+						if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 							// Other modes can't have contracts.
 							var agentURLs = new List<string> ();
 							foreach (Contract thatContract in ContractSystem.Instance.Contracts) {
