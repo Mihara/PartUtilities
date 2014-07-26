@@ -115,7 +115,6 @@ namespace JSIPartUtilities
 
 			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
 				currentState = areComponentsEnabled;
-				//EditorDriver.StartupBehaviour != EditorDriver.StartupBehaviours.START_CLEAN
 			}
 
 			if (currentState) {
