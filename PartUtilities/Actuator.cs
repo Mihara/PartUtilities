@@ -39,8 +39,7 @@ namespace JSIPartUtilities
 			"maximum_drag",
 			"minimum_drag",
 			"breakingForce",
-			"breakingTorque",
-			"CrewCapacity",
+			"breakingTorque"
 		};
 
 		public Actuator (string configData, ActuatorType creatingType, Part thatPart)
@@ -166,8 +165,6 @@ namespace JSIPartUtilities
 				return thatPart.breakingForce;
 			case "breakingTorque":
 				return thatPart.breakingTorque;
-			case "CrewCapacity":
-				return thatPart.CrewCapacity;
 			}
 			return 0;
 		}
@@ -195,9 +192,6 @@ namespace JSIPartUtilities
 				break;
 			case "breakingTorque":
 				thatPart.breakingTorque = value;
-				break;
-			case "CrewCapacity":
-				thatPart.CrewCapacity = (int)value;
 				break;
 			}
 		}
