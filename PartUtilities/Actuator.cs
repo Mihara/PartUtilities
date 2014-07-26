@@ -134,12 +134,15 @@ namespace JSIPartUtilities
 					if (float.TryParse (tokens [1], out maxAmount)) {
 						bool found = false;
 						resourceName = tokens [0].Trim ();
+						if (resourceName.StartsWith ("*", StringComparison.Ordinal)) {
+							resourceAlreadyExists = true;
+							resourceName = resourceName.Trim ('*');
+						}
 						foreach (PartResourceDefinition thatResource in PartResourceLibrary.Instance.resourceDefinitions) {
 							found |= thatResource.name == resourceName;
 						}
 						if (!found)
 							throw new ArgumentException ("Bad resource name.");
-						resourceAlreadyExists |= thatPart.Resources [resourceName] != null;
 					} else {
 						throw new ArgumentException ("Bad resource amount.");
 					}
