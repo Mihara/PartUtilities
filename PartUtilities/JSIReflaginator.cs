@@ -28,7 +28,7 @@ namespace JSIPartUtilities
 				Events ["SelectFlag"].unfocusedRange = unfocusedActivationRange;
 				Events ["SelectFlag"].guiName = selectFlagMenuString;
 				if (!selectable) {
-					ShutdownEvent ("SelectFlag");
+					Events ["SelectFlag"].active = false;
 				}
 				CheckRefills ();
 			}
@@ -65,7 +65,7 @@ namespace JSIPartUtilities
 		private void CheckRefills ()
 		{
 			if (refills == 0) {
-				ShutdownEvent ("GetFlag");
+				Events ["GetFlag"].active = false;
 			} else {
 				Events ["GetFlag"].guiName = refills < 0 ? takeFlagMenuString : string.Format ("{0} ({1})", takeFlagMenuString, refills);
 			}
@@ -83,14 +83,6 @@ namespace JSIPartUtilities
 		public void FlagDismissed ()
 		{
 			Destroy (fb);
-		}
-
-		private void ShutdownEvent (string eventName)
-		{
-			Events [eventName].active = false;
-			Events [eventName].guiActive = false;
-			Events [eventName].guiActiveEditor = false;
-			Events [eventName].guiActiveUnfocused = false;
 		}
 	}
 }

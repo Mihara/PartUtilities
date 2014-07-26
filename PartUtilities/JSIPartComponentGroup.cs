@@ -92,17 +92,13 @@ namespace JSIPartUtilities
 				Destroy (this);
 			}
 
-			Events ["JSIGuiToggleComponents"].guiActive = activeInFlight;
-			Events ["JSIGuiToggleComponents"].guiActiveEditor = activeInEditor;
-			Events ["JSIGuiToggleComponents"].guiActiveUnfocused = activeWhenUnfocused;
-
-			Events ["JSIGuiToggleComponents"].externalToEVAOnly = externalToEVAOnly;
-			Events ["JSIGuiEnableComponents"].externalToEVAOnly = externalToEVAOnly;
-			Events ["JSIGuiDisableComponents"].externalToEVAOnly = externalToEVAOnly;
-
-			Events ["JSIGuiToggleComponents"].unfocusedRange = unfocusedActivationRange;
-			Events ["JSIGuiEnableComponents"].unfocusedRange = unfocusedActivationRange;
-			Events ["JSIGuiDisableComponents"].unfocusedRange = unfocusedActivationRange;
+			foreach (string eventName in new [] {"JSIGuiToggleComponents","JSIGuiEnableComponents","JSIGuiDisableComponents"}) {
+				Events [eventName].guiActive = activeInFlight;
+				Events [eventName].guiActiveEditor = activeInEditor;
+				Events [eventName].guiActiveUnfocused = activeWhenUnfocused;
+				Events [eventName].externalToEVAOnly = externalToEVAOnly;
+				Events [eventName].unfocusedRange = unfocusedActivationRange;
+			}
 
 			if (!string.IsNullOrEmpty (enableMenuString)) {
 				Events ["JSIGuiEnableComponents"].guiName = enableMenuString;
@@ -119,38 +115,38 @@ namespace JSIPartUtilities
 			}
 
 			if (currentState) {
-				ShutdownEvent ("JSIGuiEnableComponents");
+				Events ["JSIGuiEnableComponents"].active = false;
 			} else {
-				ShutdownEvent ("JSIGuiDisableComponents");
+				Events ["JSIGuiDisableComponents"].active = false;
 			}
 
 			if (!showToggleOption) {
-				ShutdownEvent ("JSIGuiToggleComponents");
+				Events ["JSIGuiToggleComponents"].active = false;
 			}
 
 			if (!showEnableDisableOption) {
-				ShutdownEvent ("JSIGuiEnableComponents");
-				ShutdownEvent ("JSIGuiDisableComponents");
+				Events ["JSIGuiEnableComponents"].active = false;
+				Events ["JSIGuiDisableComponents"].active = false;
 			}
 
 			LoopThroughActuators (currentState);
 		}
 
-		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Enable component group")]
+		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Enable component group")]
 		public void JSIGuiEnableComponents ()
 		{
 			currentState = true;
 			LoopThroughActuators (currentState);
 		}
 
-		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Disable component group")]
+		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Disable component group")]
 		public void JSIGuiDisableComponents ()
 		{
 			currentState = false;
 			LoopThroughActuators (currentState);
 		}
 
-		[KSPEvent (guiActive = true, guiActiveEditor = true, guiName = "Toggle component group")]
+		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Toggle component group")]
 		public void JSIGuiToggleComponents ()
 		{
 			currentState = !currentState;
@@ -170,34 +166,14 @@ namespace JSIPartUtilities
 
 			if (showEnableDisableOption) {
 				if (state) {
-
-					ShutdownEvent ("JSIGuiEnableComponents");
-
+					Events ["JSIGuiEnableComponents"].active = false;
 					Events ["JSIGuiDisableComponents"].active = true;
-
-					Events ["JSIGuiDisableComponents"].guiActive |= activeInFlight;
-					Events ["JSIGuiDisableComponents"].guiActiveEditor |= activeInEditor;
-					Events ["JSIGuiDisableComponents"].guiActiveUnfocused |= activeWhenUnfocused;
 				} else {
-
-					ShutdownEvent ("JSIGuiDisableComponents");
-
+					Events ["JSIGuiDisableComponents"].active = false;
 					Events ["JSIGuiEnableComponents"].active = true;
-					Events ["JSIGuiEnableComponents"].guiActive |= activeInFlight;
-					Events ["JSIGuiEnableComponents"].guiActiveEditor |= activeInEditor;
-					Events ["JSIGuiEnableComponents"].guiActiveUnfocused |= activeWhenUnfocused;
 				}
 			}
 		}
-
-		private void ShutdownEvent (string eventName)
-		{
-			Events [eventName].active = false;
-			Events [eventName].guiActive = false;
-			Events [eventName].guiActiveEditor = false;
-			Events [eventName].guiActiveUnfocused = false;
-		}
-
 	}
 }
 
