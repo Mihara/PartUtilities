@@ -157,10 +157,6 @@ namespace JSIPartUtilities
 		private void LoopThroughActuators (bool state)
 		{
 
-			if (HighLogic.LoadedSceneIsEditor) {
-				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
-			}
-
 			actuatorState = state;
 			foreach (Actuator thatActuator in actuators) {
 				if (partLocal) {
@@ -179,6 +175,11 @@ namespace JSIPartUtilities
 					Events ["JSIGuiEnableComponents"].active = true;
 				}
 			}
+
+			if (HighLogic.LoadedSceneIsEditor) {
+				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
+			}
+
 		}
 	}
 }
