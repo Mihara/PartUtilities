@@ -28,7 +28,11 @@ namespace JSIPartUtilities
 			} else {
 				part.CrewCapacity = currentState ? capacityWhenTrue : capacityWhenFalse;
 				// Greys suggested to use MET to determine if we're just launching.
-				// That seems like the most sensible option -- CrewManifest uses Vessel.landedAt (launchpad, runway) which might not actually be true.
+				// That seems like the most sensible option -- CrewManifest uses Vessel.landedAt (launchpad, runway) which might not actually be true
+				// if a mod that changes the launch site is used.
+				// We only need to run this check once --
+				// see if we have more crew than our current capacity, kick out
+				// the extras, mark them unassigned and proceed as usual.
 				if (HighLogic.LoadedSceneIsFlight && vessel.missionTime < 1) {
 					int difference = part.protoModuleCrew.Count - part.CrewCapacity;
 					if (difference > 0) {
@@ -84,11 +88,12 @@ namespace JSIPartUtilities
 			// This dirty hack was originally suggested by ozraven, so presented here with special thanks to him.
 			// In his implementation, he actually would move the internal seat modules in and out of the list of internal seats.
 			// I thought of a much simpler way, however: I can mark them as taken. 
-			// All the code that adds kerbals to a seat while in flight (VAB is a very much another story) actually checks for whether the seat is taken, but if it is,
-			// the code doesn't concern itself with what's actually in the seat. So it is possible for the seat to be taken up by nothing, which is what
-			// we're going to exploit.
+			// All the code that adds kerbals to a seat while in flight (VAB is a very much another story) actually checks for whether the seat is taken, 
+			// that is, has the 'taken' field set to true. But if it is taken, the code doesn't concern itself with what's actually in the seat.
+			// So it is possible for the seat to be taken up by nothing, which is what we're going to exploit.
 
 			// If the internal model is null, don't do anythying.
+			// Internal models get created and destroyed all the time anyway, which is why this function is called regularly.
 			if (thatPart.internalModel != null) {
 				// First, let's see what the game thinks about the number of available seats.
 				int availableSeats = thatPart.internalModel.GetAvailableSeatCount ();
@@ -98,10 +103,11 @@ namespace JSIPartUtilities
 				if (difference != 0) {
 					foreach (InternalSeat seat in thatPart.internalModel.seats) {
 						// If the seat is taken and actually contains a kerbal, we don't do anything to it, because we can't really handle
-						// the case of kicking multiple kerbals out of their seats at once anyway.
+						// the case of kicking multiple kerbals out of their seats at once anyway except when at launch,
+						// when it's appropriate to just remove them from the vessel and make them unassigned.
 						if (!(seat.taken && seat.kerbalRef != null)) {
 							// If our difference value is positive, we need to add seats,
-							// so we mark them, in order, as not taken -- since we made sure there's no kerbal in it, we must've been the ones that marked it.
+							// so we mark them, in order, as not taken -- since we just made sure there's no kerbal in it, we must've been the ones that marked it.
 							if (difference > 0 && seat.taken) {
 								seat.taken = false;
 								difference--;
