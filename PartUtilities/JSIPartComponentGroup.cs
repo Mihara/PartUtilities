@@ -13,6 +13,9 @@ namespace JSIPartUtilities
 		public bool spawned;
 
 		[KSPField]
+		public string groupID = string.Empty;
+
+		[KSPField]
 		public bool areComponentsEnabled = true;
 
 		[KSPField]
@@ -131,6 +134,17 @@ namespace JSIPartUtilities
 			}
 			spawned = true;
 			LoopThroughActuators (currentState);
+		}
+
+		[KSPEvent (active = true, guiActive = false, guiActiveEditor = false)]
+		public void JSIGroupToggle (BaseEventData data)
+		{
+			if (data.GetString ("groupID") == groupID && !string.IsNullOrEmpty(groupID)) {
+				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
+					currentState = data.GetBool ("state");
+					LoopThroughActuators(currentState);
+				}
+			}
 		}
 
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Enable component group")]
