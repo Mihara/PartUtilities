@@ -141,11 +141,8 @@ namespace JSIPartUtilities
 		{
 			if (data.GetString ("groupID") == groupID && !string.IsNullOrEmpty(groupID)) {
 				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
-					bool newState = data.GetBool ("state");
-					if (newState != currentState) {
-						currentState = newState;
-						LoopThroughActuators (currentState);
-					}
+					currentState = data.GetBool ("state");
+					LoopThroughActuators(currentState);
 				}
 			}
 		}
