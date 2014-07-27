@@ -76,6 +76,7 @@ namespace JSIPartUtilities
 			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
 				currentState = groupStates.Contains (initialState) ? initialState : groupStates [0];
 			}
+			SwitchToState (currentState);
 			spawned = true;
 		}
 
