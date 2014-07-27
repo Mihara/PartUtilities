@@ -59,6 +59,7 @@
     <Compile Include="JSIGroupSelector.cs" />
     <Compile Include="JSIListAllAnimations.cs" />
     <Compile Include="JSICrewCapacityManager.cs" />
+    <Compile Include="JSIFlightStateTracker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
