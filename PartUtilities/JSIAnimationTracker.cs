@@ -29,11 +29,12 @@ namespace JSIPartUtilities
 		public string shaderToggles = string.Empty;
 		[KSPField]
 		public string numericToggles = string.Empty;
+		[KSPField]
+		public string controlCrewCapacity = string.Empty;
 
 		private List<Actuator> actuators = new List<Actuator> ();
 		private Animation trackedAnimation;
 		private bool actuatorState;
-		private bool maintainCrewCapacity = false;
 
 		private void ParseSet (string input, ActuatorType type)
 		{
@@ -57,13 +58,11 @@ namespace JSIPartUtilities
 				ParseSet (textureToggles, ActuatorType.TransformTexture);
 				ParseSet (shaderToggles, ActuatorType.TransformShader);
 				ParseSet (numericToggles, ActuatorType.StraightParameter);
+				ParseSet (controlCrewCapacity, ActuatorType.CrewCapacity);
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
 				Destroy (this);
 			}
-
-			// Maintain crew capacity if we're altering it.
-			maintainCrewCapacity = numericToggles.Contains ("CrewCapacity");
 
 			actuatorState = GetAnimationState ();
 			LoopThroughActuators (actuatorState);
@@ -94,9 +93,6 @@ namespace JSIPartUtilities
 					LoopThroughActuators (newstate);
 				}
 
-			}
-			if (maintainCrewCapacity) {
-				JUtil.AlterCrewCapacity (part.CrewCapacity,part);
 			}
 		}
 	}

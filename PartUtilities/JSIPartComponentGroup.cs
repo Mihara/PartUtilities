@@ -43,6 +43,9 @@ namespace JSIPartUtilities
 		public string managedResources = string.Empty;
 
 		[KSPField]
+		public string controlCrewCapacity = string.Empty;
+
+		[KSPField]
 		public bool activeInEditor = true;
 		[KSPField]
 		public bool activeInFlight = true;
@@ -66,11 +69,6 @@ namespace JSIPartUtilities
 		[KSPField]
 		public string toggleMenuString = string.Empty;
 
-		[KSPField(isPersistant =true)]
-		public int savedCrewCapacity;
-
-
-		private bool maintainCrewCapacity = false;
 		private readonly List<Actuator> actuators = new List<Actuator> ();
 		private bool actuatorState;
 
@@ -90,12 +88,6 @@ namespace JSIPartUtilities
 			}
 		}
 
-		public override void OnUpdate(){
-			if (maintainCrewCapacity) {
-				savedCrewCapacity = part.CrewCapacity;
-				JUtil.AlterCrewCapacity (part.CrewCapacity,part);
-			}
-		}
 
 		public override void OnStart (PartModule.StartState state)
 		{
@@ -107,14 +99,11 @@ namespace JSIPartUtilities
 				ParseSet (shaderToggles, ActuatorType.TransformShader);
 				ParseSet (numericToggles, ActuatorType.StraightParameter);
 				ParseSet (managedResources, ActuatorType.Resource);
+				ParseSet (controlCrewCapacity, ActuatorType.CrewCapacity);
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
 				Destroy (this);
 			}
-
-			// Maintain crew capacity if we're altering it.
-			maintainCrewCapacity = numericToggles.Contains ("CrewCapacity");
-			savedCrewCapacity = part.CrewCapacity;
 
 			foreach (string eventName in new [] {"JSIGuiToggleComponents","JSIGuiEnableComponents","JSIGuiDisableComponents"}) {
 				Events [eventName].guiActive = activeInFlight;
@@ -136,8 +125,6 @@ namespace JSIPartUtilities
 
 			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
 				currentState = areComponentsEnabled;
-			} else {
-				part.CrewCapacity = savedCrewCapacity;
 			}
 
 			if (currentState) {

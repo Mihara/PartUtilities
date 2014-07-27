@@ -14,6 +14,7 @@ namespace JSIPartUtilities
 		TransformShader,
 		StraightParameter,
 		Resource,
+		CrewCapacity,
 	}
 
 	public class Actuator
@@ -40,8 +41,7 @@ namespace JSIPartUtilities
 			"maximum_drag",
 			"minimum_drag",
 			"breakingForce",
-			"breakingTorque",
-			"CrewCapacity",
+			"breakingTorque"
 		};
 
 		public Actuator (string configData, ActuatorType creatingType, Part thatPart)
@@ -151,6 +151,22 @@ namespace JSIPartUtilities
 					throw new ArgumentException ("Bad arguments.");
 				}
 				break;
+			case ActuatorType.CrewCapacity:
+				if (tokens.Length == 1) {
+					switch (tokens [0].ToLowerInvariant ()) {
+					case "regular":
+						inverted = false;
+						break;
+					case "inverted":
+						inverted = true;
+						break;
+					default:
+						throw new ArgumentException ("I need a 'regular' or 'inverted' here.");
+					}
+				} else {
+					throw new ArgumentException ("Bad arguments.");
+				}
+				break;
 			}
 		}
 
@@ -171,8 +187,6 @@ namespace JSIPartUtilities
 				return thatPart.breakingForce;
 			case "breakingTorque":
 				return thatPart.breakingTorque;
-			case "CrewCapacity":
-				return thatPart.CrewCapacity;
 			}
 			return 0;
 		}
@@ -200,9 +214,6 @@ namespace JSIPartUtilities
 				break;
 			case "breakingTorque":
 				thatPart.breakingTorque = value;
-				break;
-			case "CrewCapacity":
-				JUtil.AlterCrewCapacity ((int)value, thatPart);
 				break;
 			}
 		}
@@ -248,6 +259,12 @@ namespace JSIPartUtilities
 				} else {
 					SetParameter (nameOfParameter, thatPart, originalParameterValue);
 				}
+				break;
+			case ActuatorType.CrewCapacity:
+				var eventccData = new BaseEventData (BaseEventData.Sender.USER);
+				eventccData.Set ("state", newstate);
+				eventccData.Set ("objectLocal", objectLocal);
+				thatPart.SendEvent ("JSISetCrewCapacity", eventccData);
 				break;
 			case ActuatorType.Resource:
 				// We do not manipulate resource records out of the editor because fsckit.

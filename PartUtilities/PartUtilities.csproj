@@ -58,6 +58,7 @@
     <Compile Include="JSIForbidIVAHere.cs" />
     <Compile Include="JSIGroupSelector.cs" />
     <Compile Include="JSIListAllAnimations.cs" />
+    <Compile Include="JSICrewCapacityManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
