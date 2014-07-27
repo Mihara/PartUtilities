@@ -28,7 +28,6 @@ namespace JSIPartUtilities
 		[KSPField]
 		public string stateGuiName = "State";
 
-
 		[KSPField]
 		public bool partLocal = true;
 
@@ -80,13 +79,20 @@ namespace JSIPartUtilities
 			spawned = true;
 		}
 
-		private void SwitchToState (string state)
+		private void SwitchToState (string newState)
 		{
-			// To be absolutely sure all the mess with resource tanks works correctly, first we disable everything, then we enable one group.
-			foreach (string stateName in groupStates) {
-				ToggleGroup (stateName, false, partLocal ? part.gameObject : null);
+			ToggleGroup (currentState, false, partLocal ? part.gameObject : null);
+			ToggleGroup (newState, true, partLocal ? part.gameObject : null);
+
+			// Arrrgh.
+			foreach (UIPartActionWindow thatWindow in FindObjectsOfType<UIPartActionWindow>()) {
+				thatWindow.displayDirty = true;
 			}
-			ToggleGroup (state, true, partLocal ? part.gameObject : null);
+
+			if (HighLogic.LoadedSceneIsEditor) {
+				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
+			}
+			currentState = newState;
 		}
 
 
@@ -94,16 +100,14 @@ namespace JSIPartUtilities
 		public void JSIGuiNextGroupState ()
 		{
 			int newitemindex = (groupStates.IndexOf (currentState) + 1) % groupStates.Count;
-			currentState = groupStates [newitemindex == -1 ? 0 : newitemindex];
-			SwitchToState (currentState);
+			SwitchToState (groupStates [newitemindex == -1 ? 0 : newitemindex]);
 		}
 
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Previous")]
 		public void JSIGuiPreviousGroupState ()
 		{
 			int newitemindex = groupStates.IndexOf (currentState) - 1;
-			currentState = groupStates [newitemindex < 0 ? groupStates.Count - 1 : newitemindex];
-			SwitchToState (currentState);
+			SwitchToState (groupStates [newitemindex < 0 ? groupStates.Count - 1 : newitemindex]);
 		}
 
 		private void ToggleGroup (string groupID, bool newstate, GameObject objectLocal)
