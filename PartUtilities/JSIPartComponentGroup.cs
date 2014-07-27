@@ -67,6 +67,7 @@ namespace JSIPartUtilities
 		public string toggleMenuString = string.Empty;
 
 
+		private bool maintainCrewCapacity = false;
 		private readonly List<Actuator> actuators = new List<Actuator> ();
 		private bool actuatorState;
 
@@ -86,6 +87,12 @@ namespace JSIPartUtilities
 			}
 		}
 
+		public override void OnUpdate(){
+			if (maintainCrewCapacity) {
+				JUtil.AlterCrewCapacity (part.CrewCapacity,part);
+			}
+		}
+
 		public override void OnStart (PartModule.StartState state)
 		{
 			try {
@@ -100,6 +107,9 @@ namespace JSIPartUtilities
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
 				Destroy (this);
 			}
+
+			// Maintain crew capacity if we're altering it.
+			maintainCrewCapacity = numericToggles.Contains ("CrewCapacity");
 
 			foreach (string eventName in new [] {"JSIGuiToggleComponents","JSIGuiEnableComponents","JSIGuiDisableComponents"}) {
 				Events [eventName].guiActive = activeInFlight;

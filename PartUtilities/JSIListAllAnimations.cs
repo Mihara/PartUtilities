@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace JSIPartUtilities
 {
-	public class JSIListAllAnimations:PartModule
+	public class JSIListAllAnimations: PartModule
 	{
 
 		// With special thanks to ozraven for his idea.
