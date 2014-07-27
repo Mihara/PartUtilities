@@ -20,6 +20,8 @@ namespace JSIPartUtilities
 		[KSPField]
 		public string componentToggles = string.Empty;
 		[KSPField]
+		public string groupToggles = string.Empty;
+		[KSPField]
 		public string moduleToggles = string.Empty;
 		[KSPField]
 		public string textureToggles = string.Empty;
@@ -49,6 +51,7 @@ namespace JSIPartUtilities
 			// Bloody Squad and their ConfigNodes that never work properly!
 			try {
 				ParseSet (componentToggles, ActuatorType.PartComponent);
+				ParseSet (groupToggles, ActuatorType.PartComponentGroup);
 				ParseSet (moduleToggles, ActuatorType.PartModule);
 				ParseSet (textureToggles, ActuatorType.TransformTexture);
 				ParseSet (shaderToggles, ActuatorType.TransformShader);

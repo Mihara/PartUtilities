@@ -30,6 +30,8 @@ namespace JSIPartUtilities
 		[KSPField]
 		public string componentToggles = string.Empty;
 		[KSPField]
+		public string groupToggles = string.Empty;
+		[KSPField]
 		public string moduleToggles = string.Empty;
 		[KSPField]
 		public string textureToggles = string.Empty;
@@ -88,6 +90,7 @@ namespace JSIPartUtilities
 		{
 			try {
 				ParseSet (componentToggles, ActuatorType.PartComponent);
+				ParseSet (groupToggles, ActuatorType.PartComponentGroup);
 				ParseSet (moduleToggles, ActuatorType.PartModule);
 				ParseSet (textureToggles, ActuatorType.TransformTexture);
 				ParseSet (shaderToggles, ActuatorType.TransformShader);
@@ -139,10 +142,10 @@ namespace JSIPartUtilities
 		[KSPEvent (active = true, guiActive = false, guiActiveEditor = false)]
 		public void JSIGroupToggle (BaseEventData data)
 		{
-			if (data.GetString ("groupID") == groupID && !string.IsNullOrEmpty(groupID)) {
+			if (data.GetString ("groupID") == groupID && !string.IsNullOrEmpty (groupID)) {
 				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
 					currentState = data.GetBool ("state");
-					LoopThroughActuators(currentState);
+					LoopThroughActuators (currentState);
 				}
 			}
 		}

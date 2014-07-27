@@ -8,6 +8,7 @@ namespace JSIPartUtilities
 	public enum ActuatorType
 	{
 		PartComponent,
+		PartComponentGroup,
 		PartModule,
 		TransformTexture,
 		TransformShader,
@@ -59,6 +60,10 @@ namespace JSIPartUtilities
 			case ActuatorType.PartComponent:
 				moduleID = remainder;
 				JUtil.LogMessage (this, "Controlling PartComponent with moduleID {0}, {1}", moduleID, inverted ? "inverted" : "regular");
+				break;
+			case ActuatorType.PartComponentGroup:
+				moduleID = remainder;
+				JUtil.LogMessage (this, "Controlling PartComponentGroup with groupID {0}, {1}", moduleID, inverted ? "inverted" : "regular");
 				break;
 			case ActuatorType.PartModule:
 				int moduleIndex = int.Parse (remainder.Split (',') [1]);
@@ -209,6 +214,15 @@ namespace JSIPartUtilities
 				eventData.Set ("state", newstate);
 				eventData.Set ("objectLocal", objectLocal);
 				thatPart.SendEvent ("JSIComponentToggle", eventData);
+				break;
+			case ActuatorType.PartComponentGroup:
+				// Note to other people who want to use this:
+				// If you want to control a JSIPartComponentToggle, this is how you do it!
+				var eventgroupData = new BaseEventData (BaseEventData.Sender.USER);
+				eventgroupData.Set ("groupID", moduleID);
+				eventgroupData.Set ("state", newstate);
+				eventgroupData.Set ("objectLocal", objectLocal);
+				thatPart.SendEvent ("JSIGroupToggle", eventgroupData);
 				break;
 			case ActuatorType.PartModule:
 				controlledModule.enabled = newstate;
