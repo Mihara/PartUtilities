@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JSIPartUtilities
 {
@@ -23,6 +25,34 @@ namespace JSIPartUtilities
 		{
 			if (state == StartState.Editor && !spawned) {
 				currentState = initialState;
+			} else {
+				part.CrewCapacity = currentState ? capacityWhenTrue : capacityWhenFalse;
+				// Greys suggested to use MET to determine if we're just launching.
+				// That seems like the most sensible option -- CrewManifest uses Vessel.landedAt (launchpad, runway) which might not actually be true.
+				if (HighLogic.LoadedSceneIsFlight && vessel.missionTime < 1) {
+					int difference = part.protoModuleCrew.Count - part.CrewCapacity;
+					if (difference > 0) {
+						JUtil.LogMessage (this, "Stowaways found in part {0}", part.partName);
+					}
+					var stowaways = new List<ProtoCrewMember> ();
+					// We go through the list backwards, assuming that the 'more important' seats are first in the list of seats.
+					foreach (ProtoCrewMember thatCrewmember in part.protoModuleCrew.AsEnumerable().Reverse()) {
+						if (difference > 0) {
+							stowaways.Add (thatCrewmember);
+							difference--;
+						} else {
+							break;
+						}
+					}
+					foreach (ProtoCrewMember stowaway in stowaways) {
+						part.RemoveCrewmember (stowaway);
+						stowaway.seat = null;
+						stowaway.rosterStatus = ProtoCrewMember.RosterStatus.Available;
+					}
+					// And then make sure the seat flags are correct.
+					AlterCrewCapacity (part.CrewCapacity, part);
+					GameEvents.onVesselChange.Fire (FlightGlobals.ActiveVessel);
+				}
 			}
 			spawned = true;
 		}
