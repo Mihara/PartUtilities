@@ -66,7 +66,9 @@ namespace JSIPartUtilities
 				Events ["JSIGuiPreviousGroupState"].active = false;
 			}
 
-			groupStates = groupStateList.Split (new [] { ',', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries).ToList ();
+			foreach (string item in groupStateList.Split (new [] { ',', '|' }, StringSplitOptions.RemoveEmptyEntries)) {
+				groupStates.Add (item.Trim ());
+			}
 
 			if (groupStates.Count == 0) {
 				throw new ArgumentException ("List of group states is empty!");
