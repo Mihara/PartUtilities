@@ -21,6 +21,8 @@ namespace JSIPartUtilities
 		[KSPField (isPersistant = true)]
 		public bool spawned;
 
+		private bool warningLogged = false;
+
 		public override void OnStart (StartState state)
 		{
 			if (state == StartState.Editor && !spawned) {
@@ -48,7 +50,7 @@ namespace JSIPartUtilities
 						stowaway.rosterStatus = ProtoCrewMember.RosterStatus.Available;
 					}
 					// And then make sure the seat flags are correct.
-					AlterCrewCapacity (part.CrewCapacity, part);
+					AlterCrewCapacity (part);
 					GameEvents.onVesselChange.Fire (FlightGlobals.ActiveVessel);
 				}
 			}
@@ -67,16 +69,24 @@ namespace JSIPartUtilities
 		private void SwitchState (bool state)
 		{
 			part.CrewCapacity = state ? capacityWhenTrue : capacityWhenFalse;
-			AlterCrewCapacity (part.CrewCapacity, part);
+			int difference = AlterCrewCapacity (part);
+			if (difference != 0) {
+				JUtil.LogErrorMessage (this, "Somehow I ended up unable to correct the Crew Capacity properly. Remaining difference: {0}", difference);
+			}
 		}
 
 		// I might actually want to run this OnUpdate....
 		public override void OnFixedUpdate ()
 		{
-			AlterCrewCapacity (part.CrewCapacity, part);
+			int difference = AlterCrewCapacity (part);
+			if (!warningLogged && difference != 0) {
+				JUtil.LogErrorMessage (this, "Somehow I ended up unable to correct the Crew Capacity properly. Remaining difference: {0}", difference);
+				warningLogged = true;
+			}
+
 		}
 
-		private static void AlterCrewCapacity (int value, Part thatPart)
+		private static int AlterCrewCapacity (Part thatPart)
 		{
 			// Now the fun part.
 			// This dirty hack was originally suggested by ozraven, so presented here with special thanks to him.
@@ -86,14 +96,17 @@ namespace JSIPartUtilities
 			// that is, has the 'taken' field set to true. But if it is taken, the code doesn't concern itself with what's actually in the seat.
 			// So it is possible for the seat to be taken up by nothing, which is what we're going to exploit.
 
+			int difference = 0;
+
 			// If the internal model is null, don't do anythying.
 			// Internal models get created and destroyed all the time anyway, which is why this function is called regularly.
 			if (thatPart.internalModel != null) {
-				// First, let's see what the game thinks about the number of available seats.
-				int availableSeats = thatPart.internalModel.GetAvailableSeatCount ();
-
-				// If it didn't match, we alter that.
-				int difference = value - availableSeats;
+				// We take the crew capacity the part is supposed to have,
+				// subtract the number of kerbals the part actually contains,
+				// and then we subtract what the game thinks about the number of seats that are free.
+				difference = (thatPart.CrewCapacity - thatPart.protoModuleCrew.Count ()) - thatPart.internalModel.GetAvailableSeatCount ();
+				// The result is how many seats we need to mark empty (if we have seats that should be free but aren't)
+				// or how many seats we need to mark as taken (if we have seats that shouldn't be free but are.)
 				if (difference != 0) {
 					foreach (InternalSeat seat in thatPart.internalModel.seats) {
 						// If the seat is taken and actually contains a kerbal, we don't do anything to it, because we can't really handle
@@ -115,9 +128,13 @@ namespace JSIPartUtilities
 							if (difference == 0)
 								break;
 						}
+
 					}
 				}
 			}
+			// If by the time we're done we ended up with any remaining difference, it means something went wrong, so we return the remaining difference,
+			// so that the rest of the code can log an error message without causing incessant logging spam.
+			return difference;
 		}
 
 	}
