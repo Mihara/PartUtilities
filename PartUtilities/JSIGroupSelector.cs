@@ -90,19 +90,19 @@ namespace JSIPartUtilities
 		}
 
 
-		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Previous")]
+		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Next")]
 		public void JSIGuiNextGroupState ()
 		{
-			int newitemindex = (groupStates.IndexOf (currentState) + 1) % (groupStates.Count - 1);
+			int newitemindex = (groupStates.IndexOf (currentState) + 1) % groupStates.Count;
 			currentState = groupStates [newitemindex == -1 ? 0 : newitemindex];
 			SwitchToState (currentState);
 		}
 
-		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Next")]
+		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Previous")]
 		public void JSIGuiPreviousGroupState ()
 		{
-			int newitemindex = (groupStates.IndexOf (currentState) - 1) % (groupStates.Count - 1);
-			currentState = groupStates [newitemindex == -1 ? 0 : newitemindex];
+			int newitemindex = groupStates.IndexOf (currentState) - 1;
+			currentState = groupStates [newitemindex < 0 ? groupStates.Count - 1 : newitemindex];
 			SwitchToState (currentState);
 		}
 
