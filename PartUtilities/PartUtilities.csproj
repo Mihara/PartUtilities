@@ -57,6 +57,7 @@
     <Compile Include="JSIReflaginator.cs" />
     <Compile Include="JSIForbidIVAHere.cs" />
     <Compile Include="JSIGroupSelector.cs" />
+    <Compile Include="JSIListAllAnimations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
