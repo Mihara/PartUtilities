@@ -144,7 +144,7 @@ namespace JSIPartUtilities
 		[KSPEvent (active = true, guiActive = false, guiActiveEditor = false)]
 		public void JSIComponentToggle (BaseEventData data)
 		{
-			if (data.GetString ("moduleID") == moduleID) {
+			if (!string.IsNullOrEmpty (moduleID) && data.GetString ("moduleID") == moduleID) {
 				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
 					currentState = data.GetBool ("state");
 					LoopComponents ();
