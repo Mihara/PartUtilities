@@ -27,13 +27,7 @@ namespace JSIPartUtilities
 				currentState = initialState;
 			} else {
 				part.CrewCapacity = currentState ? capacityWhenTrue : capacityWhenFalse;
-				// Greys suggested to use MET to determine if we're just launching.
-				// That seems like the most sensible option -- CrewManifest uses Vessel.landedAt (launchpad, runway) which might not actually be true
-				// if a mod that changes the launch site is used.
-				// We only need to run this check once --
-				// see if we have more crew than our current capacity, kick out
-				// the extras, mark them unassigned and proceed as usual.
-				if (HighLogic.LoadedSceneIsFlight && vessel.missionTime < 1) {
+				if (vessel.situation == Vessel.Situations.PRELAUNCH) {
 					int difference = part.protoModuleCrew.Count - part.CrewCapacity;
 					if (difference > 0) {
 						JUtil.LogMessage (this, "Stowaways found in part {0}", part.partName);
