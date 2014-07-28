@@ -107,28 +107,37 @@ namespace JSIPartUtilities
 				// The result is how many seats we need to mark empty (if we have seats that should be free but aren't)
 				// or how many seats we need to mark as taken (if we have seats that shouldn't be free but are.)
 				if (difference != 0) {
-					// We mark seats going through the list backwards.
-					for (int i = thatPart.internalModel.seats.Count - 1; i >= 0; i--) {
-						// If the seat actually contains a kerbal, we ignore it, because we can't really handle
-						// the case of kicking multiple kerbals out of their seats at once anyway except when at launch,
-						// when it's appropriate to just remove them from the vessel and make them unassigned.
-						if (thatPart.internalModel.seats [i].kerbalRef == null) {
-							// If our difference value is positive, we need to add seats,
-							// so we mark them, in order, as not taken -- since we just made sure there's no kerbal in it, we must've been the ones that marked it.
-							if (difference > 0 && thatPart.internalModel.seats [i].taken) {
-								thatPart.internalModel.seats [i].taken = false;
-								difference--;
+					// We mark seats going through the list backwards if our difference is negative, i.e. we take away seats.
+					if (difference < 0) {
+						for (int i = thatPart.internalModel.seats.Count - 1; i >= 0; i--) {
+							// If the seat actually contains a kerbal, we ignore it, because we can't really handle
+							// the case of kicking multiple kerbals out of their seats at once anyway except when at launch,
+							// when it's appropriate to just remove them from the vessel and make them unassigned.
+							if (thatPart.internalModel.seats [i].kerbalRef == null) {
+								if (difference < 0 && !thatPart.internalModel.seats [i].taken) {
+									thatPart.internalModel.seats [i].taken = true;
+									difference++;
+								}
+								// If we finished rolling away the difference, we end the loop.
+								if (difference == 0)
+									break;
 							}
-							// Otherwise we need to take away seats, so we mark them taken.
-							if (difference < 0 && !thatPart.internalModel.seats [i].taken) {
-								thatPart.internalModel.seats [i].taken = true;
-								difference++;
-							}
-							// If we finished rolling away the difference, we end the loop.
-							if (difference == 0)
-								break;
-						}
 
+						}
+					} else {
+						// But if the difference is positive, we iterate forwards to add free seats.
+						// This way, the extra-taken seats are always on the end.
+						foreach (InternalSeat seat in thatPart.internalModel.seats) {
+							if (seat.kerbalRef == null) {
+								// Since we just made sure there's no kerbal in it, we must've been the ones that marked it.
+								if (difference > 0 && seat.taken) {
+									seat.taken = false;
+									difference--;
+								}
+								if (difference == 0)
+									break;
+							}
+						}
 					}
 				}
 			}
