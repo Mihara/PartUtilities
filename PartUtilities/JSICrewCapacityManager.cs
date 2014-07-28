@@ -107,10 +107,10 @@ namespace JSIPartUtilities
 				if (difference != 0) {
 					// We mark seats going through the list backwards.
 					for (int i = thatPart.internalModel.seats.Count - 1; i >= 0; i--) {
-						// If the seat is taken and actually contains a kerbal, we don't do anything to it, because we can't really handle
+						// If the seat actually contains a kerbal, we ignore it, because we can't really handle
 						// the case of kicking multiple kerbals out of their seats at once anyway except when at launch,
 						// when it's appropriate to just remove them from the vessel and make them unassigned.
-						if (!(thatPart.internalModel.seats [i].taken && thatPart.internalModel.seats [i].kerbalRef != null)) {
+						if (thatPart.internalModel.seats [i].kerbalRef == null) {
 							// If our difference value is positive, we need to add seats,
 							// so we mark them, in order, as not taken -- since we just made sure there's no kerbal in it, we must've been the ones that marked it.
 							if (difference > 0 && thatPart.internalModel.seats [i].taken) {
