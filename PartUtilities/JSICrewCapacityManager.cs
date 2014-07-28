@@ -46,10 +46,10 @@ namespace JSIPartUtilities
 						stowaway.seat = null;
 						stowaway.rosterStatus = ProtoCrewMember.RosterStatus.Available;
 					}
-					// And then make sure the seat flags are correct.
-					AlterCrewCapacity (part);
-					GameEvents.onVesselChange.Fire (FlightGlobals.ActiveVessel);
 				}
+				// And then make sure the seat flags are correct.
+				AlterCrewCapacity (part);
+				GameEvents.onVesselChange.Fire (FlightGlobals.ActiveVessel);
 			}
 			spawned = true;
 		}
