@@ -46,6 +46,7 @@ namespace JSIPartUtilities
 						stowaway.seat = null;
 						stowaway.rosterStatus = ProtoCrewMember.RosterStatus.Available;
 					}
+					JUtil.LogMessage (this, "{0} stowaways evicted.", stowaways.Count);
 				}
 				// And then make sure the seat flags are correct.
 				AlterCrewCapacity (part);

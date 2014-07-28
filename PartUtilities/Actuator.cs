@@ -91,7 +91,7 @@ namespace JSIPartUtilities
 					if (GameDatabase.Instance.ExistsTexture (tokens [1].Trim ()) && GameDatabase.Instance.ExistsTexture (tokens [2].Trim ())) {
 						falseString = tokens [1].Trim ();
 						trueString = tokens [2].Trim ();
-						JUtil.LogMessage (this, "Controlling texture on transfomrm '{0}', {1}", tokens [0].Trim (), inverted ? "inverted" : "regular");
+						JUtil.LogMessage (this, "Controlling texture on transform '{0}', {1}", tokens [0].Trim (), inverted ? "inverted" : "regular");
 					} else {
 						throw new ArgumentException ("Textures not found.");
 					}
@@ -111,6 +111,7 @@ namespace JSIPartUtilities
 					if (Shader.Find (tokens [1].Trim ()) && Shader.Find (tokens [2].Trim ())) {
 						falseString = tokens [1].Trim ();
 						trueString = tokens [2].Trim ();
+						JUtil.LogMessage (this, "Controlling shader on transform '{0}', {1}", tokens [0].Trim (), inverted ? "inverted" : "regular");
 					} else {
 						throw new ArgumentException ("Shaders not found.");
 					}
@@ -124,6 +125,7 @@ namespace JSIPartUtilities
 						if (Array.IndexOf (knownStraightParameters, tokens [0].Trim ()) >= 0) {
 							nameOfParameter = tokens [0].Trim ();
 							originalParameterValue = GetParameter (nameOfParameter, thatPart);
+							JUtil.LogMessage (this, "Controlling parameter '{0}' on part {1}, {2}", nameOfParameter, thatPart.partName, inverted ? "inverted" : "regular");
 						} else {
 							throw new ArgumentException ("Bad arguments, unknown straight parameter " + tokens [0]);
 						}
@@ -144,6 +146,7 @@ namespace JSIPartUtilities
 						}
 						if (!found)
 							throw new ArgumentException ("Bad resource name.");
+						JUtil.LogMessage (this, "Controlling resource tank for resource {0} in part {1}, {2}", resourceName, thatPart.partName, inverted ? "inverted" : "regular");
 					} else {
 						throw new ArgumentException ("Bad resource amount.");
 					}
@@ -163,6 +166,7 @@ namespace JSIPartUtilities
 					default:
 						throw new ArgumentException ("I need a 'regular' or 'inverted' here.");
 					}
+					JUtil.LogMessage (this, "Controlling crew capacity in part {0}, {1}", thatPart.partName, inverted ? "inverted" : "regular");
 				} else {
 					throw new ArgumentException ("Bad arguments.");
 				}
