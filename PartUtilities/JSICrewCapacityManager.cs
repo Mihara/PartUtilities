@@ -49,7 +49,8 @@ namespace JSIPartUtilities
 				}
 				// And then make sure the seat flags are correct.
 				AlterCrewCapacity (part);
-				GameEvents.onVesselChange.Fire (FlightGlobals.ActiveVessel);
+				if (vessel.isActiveVessel)
+					GameEvents.onVesselChange.Fire (vessel);
 			}
 			spawned = true;
 		}
