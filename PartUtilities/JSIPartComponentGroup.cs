@@ -72,7 +72,6 @@ namespace JSIPartUtilities
 		public string toggleMenuString = string.Empty;
 
 		private readonly List<Actuator> actuators = new List<Actuator> ();
-		private bool actuatorState;
 
 		#region IPartCostModifier implementation
 
@@ -126,7 +125,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponents"].guiName = toggleMenuString;
 			}
 
-			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
+			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (!persistAfterEditor && !HighLogic.LoadedSceneIsEditor)) {
 				currentState = areComponentsEnabled;
 			}
 
@@ -151,8 +150,7 @@ namespace JSIPartUtilities
 		{
 			if (data.GetString ("groupID") == groupID && !string.IsNullOrEmpty (groupID)) {
 				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
-					currentState = data.GetBool ("state");
-					LoopThroughActuators (currentState);
+					LoopThroughActuators (data.GetBool ("state"));
 				}
 			}
 		}
@@ -160,28 +158,23 @@ namespace JSIPartUtilities
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Enable component group")]
 		public void JSIGuiEnableComponents ()
 		{
-			currentState = true;
-			LoopThroughActuators (currentState);
+			LoopThroughActuators (true);
 		}
 
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Disable component group")]
 		public void JSIGuiDisableComponents ()
 		{
-			currentState = false;
-			LoopThroughActuators (currentState);
+			LoopThroughActuators (false);
 		}
 
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Toggle component group")]
 		public void JSIGuiToggleComponents ()
 		{
-			currentState = !currentState;
-			LoopThroughActuators (currentState);
+			LoopThroughActuators (!currentState);
 		}
 
 		private void LoopThroughActuators (bool state)
 		{
-
-			actuatorState = state;
 			foreach (Actuator thatActuator in actuators) {
 				thatActuator.SetState (part, state, partLocal ? part.gameObject : null);
 			}
@@ -196,10 +189,12 @@ namespace JSIPartUtilities
 				}
 			}
 
+			currentState = state;
+			JUtil.ForceRightclickMenuRefresh ();
+
 			if (HighLogic.LoadedSceneIsEditor) {
 				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
 			}
-
 		}
 	}
 }

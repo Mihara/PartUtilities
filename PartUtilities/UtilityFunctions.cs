@@ -18,6 +18,13 @@ namespace JSIPartUtilities
 			Debug.LogError (String.Format (caller.GetType ().Name + ": " + line, list));
 		}
 
+		public static void ForceRightclickMenuRefresh ()
+		{
+			foreach (UIPartActionWindow thatWindow in UnityEngine.Object.FindObjectsOfType<UIPartActionWindow>()) {
+				thatWindow.displayDirty = true;
+			}
+		}
+
 		public static FlagBrowser CreateFlagSelectorWindow (object caller, FlagBrowser.FlagSelectedCallback selectedCallback, Callback dismissedCallback)
 		{
 			LogMessage (caller, "Creating flag selector window...");

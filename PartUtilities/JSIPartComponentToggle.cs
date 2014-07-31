@@ -120,7 +120,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponent"].guiName = toggleMenuString;
 			}
 
-			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
+			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (!persistAfterEditor && !HighLogic.LoadedSceneIsEditor)) {
 				currentState = componentIsEnabled;
 			}
 
@@ -194,6 +194,7 @@ namespace JSIPartUtilities
 					Events ["JSIGuiEnableComponent"].active = true;
 				}
 			}
+			JUtil.ForceRightclickMenuRefresh ();
 		}
 
 		private static void SetState (Part thatPart, string targetName, bool state, bool controlRendering, bool controlColliders)

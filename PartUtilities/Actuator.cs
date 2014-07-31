@@ -34,8 +34,8 @@ namespace JSIPartUtilities
 		private readonly float maxAmount = 0;
 
 		private readonly string nodeName = string.Empty;
-		private readonly Vector3 savedNodePosition = Vector3.zero;
 		private readonly Vector3 faraway = new Vector3 (10000, 10000, 10000);
+		private readonly Vector3 savedNodePosition = Vector3.zero;
 
 		private PartResource resourcePointer;
 
@@ -51,6 +51,9 @@ namespace JSIPartUtilities
 
 		public Actuator (string configData, ActuatorType creatingType, Part thatPart)
 		{
+
+			savedNodePosition = faraway;
+
 			type = creatingType;
 			string remainder;
 			if (configData.StartsWith ("!", StringComparison.Ordinal)) {
@@ -314,7 +317,7 @@ namespace JSIPartUtilities
 				}
 				break;
 			case ActuatorType.AttachmentNode:
-				if (HighLogic.LoadedSceneIsEditor) {
+				if (HighLogic.LoadedSceneIsEditor && savedNodePosition != faraway) {
 					var foundNode = thatPart.findAttachNode (nodeName);
 					if (foundNode.attachedPart == null) {
 						foundNode.position = newstate ? faraway : savedNodePosition;

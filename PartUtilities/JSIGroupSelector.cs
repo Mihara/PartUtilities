@@ -85,10 +85,7 @@ namespace JSIPartUtilities
 			ToggleGroup (currentState, false, partLocal ? part.gameObject : null);
 			ToggleGroup (newState, true, partLocal ? part.gameObject : null);
 
-			// Arrrgh.
-			foreach (UIPartActionWindow thatWindow in FindObjectsOfType<UIPartActionWindow>()) {
-				thatWindow.displayDirty = true;
-			}
+			JUtil.ForceRightclickMenuRefresh ();
 
 			if (HighLogic.LoadedSceneIsEditor) {
 				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
