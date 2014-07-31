@@ -79,7 +79,6 @@ namespace JSIPartUtilities
 		public string toggleMenuString = string.Empty;
 
 		private string[] componentList;
-		private bool startupComplete;
 
 		#region IPartCostModifier implementation
 
@@ -137,7 +136,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiDisableComponent"].active = false;
 			}
 
-			startupComplete = true;
+			spawned = true;
 			LoopComponents ();
 		}
 
@@ -175,7 +174,7 @@ namespace JSIPartUtilities
 
 		private void LoopComponents ()
 		{
-			if (!startupComplete)
+			if (!spawned)
 				return;
 
 			if (HighLogic.LoadedSceneIsEditor && costOfBeingEnabled > 0) {

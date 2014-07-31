@@ -175,6 +175,9 @@ namespace JSIPartUtilities
 
 		private void LoopThroughActuators (bool state)
 		{
+			if (!spawned)
+				return;
+
 			foreach (Actuator thatActuator in actuators) {
 				thatActuator.SetState (part, state, partLocal ? part.gameObject : null);
 			}
