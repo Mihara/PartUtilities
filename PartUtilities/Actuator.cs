@@ -184,6 +184,7 @@ namespace JSIPartUtilities
 						throw new ArgumentException ("Node not found.");
 					}
 					savedNodePosition = foundNode.position;
+					JUtil.LogMessage (this, "Managing attach node in part {0}, node name {1}, {2}", thatPart.partName, nodeName, inverted ? "inverted" : "regular");
 				} else {
 					throw new ArgumentException ("Node name missing.");
 				}
