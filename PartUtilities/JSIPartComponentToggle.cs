@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
 
 namespace JSIPartUtilities
 {
@@ -119,7 +120,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponent"].guiName = toggleMenuString;
 			}
 
-			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (!persistAfterEditor && !HighLogic.LoadedSceneIsEditor)) {
+			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (HighLogic.LoadedSceneIsFlight && !persistAfterEditor)) {
 				currentState = componentIsEnabled;
 			}
 
@@ -137,7 +138,7 @@ namespace JSIPartUtilities
 			}
 
 			spawned = true;
-			LoopComponents ();
+			LoopComponents (currentState);
 		}
 
 		[KSPEvent (active = true, guiActive = false, guiActiveEditor = false)]
@@ -145,8 +146,7 @@ namespace JSIPartUtilities
 		{
 			if (!string.IsNullOrEmpty (moduleID) && data.GetString ("moduleID") == moduleID) {
 				if (data.GetGameObject ("objectLocal") == null || data.GetGameObject ("objectLocal") == part.gameObject) {
-					currentState = data.GetBool ("state");
-					LoopComponents ();
+					LoopComponents (data.GetBool ("state"));
 				}
 			}
 		}
@@ -154,38 +154,31 @@ namespace JSIPartUtilities
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Enable component")]
 		public void JSIGuiEnableComponent ()
 		{
-			currentState = true;
-			LoopComponents ();
+			LoopComponents (true);
 		}
 
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Disable component")]
 		public void JSIGuiDisableComponent ()
 		{
-			currentState = false;
-			LoopComponents ();
+			LoopComponents (false);
 		}
 
 		[KSPEvent (active = true, guiActive = true, guiActiveEditor = true, guiName = "Toggle component")]
 		public void JSIGuiToggleComponent ()
 		{
-			currentState = !currentState;
-			LoopComponents ();
+			LoopComponents (!currentState);
 		}
 
-		private void LoopComponents ()
+		private void LoopComponents (bool newstate)
 		{
 			if (!spawned)
 				return;
 
-			if (HighLogic.LoadedSceneIsEditor && costOfBeingEnabled > 0) {
-				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
-			}
-
 			foreach (string componentText in componentList) {
-				SetState (part, componentText, currentState, controlRendering, controlColliders);
+				SetState (part, componentText, newstate, controlRendering, controlColliders);
 			}
 			if (showEnableDisableOption) {
-				if (currentState) {
+				if (newstate) {
 					Events ["JSIGuiEnableComponent"].active = false;
 					Events ["JSIGuiDisableComponent"].active = true;
 				} else {
@@ -193,26 +186,35 @@ namespace JSIPartUtilities
 					Events ["JSIGuiEnableComponent"].active = true;
 				}
 			}
+
+			currentState = newstate;
+
 			JUtil.ForceRightclickMenuRefresh ();
+
+			if (HighLogic.LoadedSceneIsEditor) {
+				GameEvents.onEditorShipModified.Fire (EditorLogic.fetch.ship);
+			}
 		}
 
 		private static void SetState (Part thatPart, string targetName, bool state, bool controlRendering, bool controlColliders)
 		{
 			Component thatComponent = thatPart.FindModelComponent<Component> (targetName);
-			if (controlRendering) {
-				if (thatComponent.renderer != null) {
-					thatComponent.renderer.enabled = state;
+			if (thatComponent != null) {
+				if (controlRendering) {
+					if (thatComponent.renderer != null) {
+						thatComponent.renderer.enabled = state;
+					}
+					foreach (Renderer thatRenderer in thatComponent.GetComponentsInChildren<Renderer>()) {
+						thatRenderer.enabled = state;
+					}
 				}
-				foreach (Renderer thatRenderer in thatComponent.GetComponentsInChildren<Renderer>()) {
-					thatRenderer.enabled = state;
-				}
-			}
-			if (controlColliders) {
-				if (thatComponent.collider != null) {
-					thatComponent.collider.enabled = state;
-				}
-				foreach (Collider thatCollider in thatComponent.GetComponentsInChildren<Collider>()) {
-					thatCollider.enabled = state;
+				if (controlColliders) {
+					if (thatComponent.collider != null) {
+						thatComponent.collider.enabled = state;
+					}
+					foreach (Collider thatCollider in thatComponent.GetComponentsInChildren<Collider>()) {
+						thatCollider.enabled = state;
+					}
 				}
 			}
 		}

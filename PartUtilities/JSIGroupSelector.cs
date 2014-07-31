@@ -73,7 +73,7 @@ namespace JSIPartUtilities
 				throw new ArgumentException ("List of group states is empty!");
 			}
 
-			if ((state == StartState.Editor && !spawned) || (!persistAfterEditor && state != StartState.Editor)) {
+			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (HighLogic.LoadedSceneIsFlight && !persistAfterEditor)) {
 				currentState = groupStates.Contains (initialState) ? initialState : groupStates [0];
 			}
 			SwitchToState (currentState);

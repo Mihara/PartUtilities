@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine;
 
 namespace JSIPartUtilities
 {
@@ -125,7 +127,7 @@ namespace JSIPartUtilities
 				Events ["JSIGuiToggleComponents"].guiName = toggleMenuString;
 			}
 
-			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (!persistAfterEditor && !HighLogic.LoadedSceneIsEditor)) {
+			if ((HighLogic.LoadedSceneIsEditor && !spawned) || (HighLogic.LoadedSceneIsFlight && !persistAfterEditor)) {
 				currentState = areComponentsEnabled;
 			}
 
@@ -142,6 +144,19 @@ namespace JSIPartUtilities
 				Events ["JSIGuiDisableComponents"].active = false;
 			}
 			spawned = true;
+
+			if (HighLogic.LoadedSceneIsEditor) {
+				StartCoroutine (DelayedLoop (0.05f));
+			} else {
+				LoopThroughActuators (currentState);
+			}
+
+		}
+
+		// This is needed because in particular, managedNodes do not hide if we don't have that delay for some reason.
+		public IEnumerator DelayedLoop (float waitTime)
+		{
+			yield return new WaitForSeconds (waitTime);
 			LoopThroughActuators (currentState);
 		}
 
@@ -173,17 +188,17 @@ namespace JSIPartUtilities
 			LoopThroughActuators (!currentState);
 		}
 
-		private void LoopThroughActuators (bool state)
+		private void LoopThroughActuators (bool newstate)
 		{
 			if (!spawned)
 				return;
 
 			foreach (Actuator thatActuator in actuators) {
-				thatActuator.SetState (part, state, partLocal ? part.gameObject : null);
+				thatActuator.SetState (part, newstate, partLocal ? part.gameObject : null);
 			}
 
 			if (showEnableDisableOption) {
-				if (state) {
+				if (newstate) {
 					Events ["JSIGuiEnableComponents"].active = false;
 					Events ["JSIGuiDisableComponents"].active = true;
 				} else {
@@ -192,7 +207,8 @@ namespace JSIPartUtilities
 				}
 			}
 
-			currentState = state;
+			currentState = newstate;
+
 			JUtil.ForceRightclickMenuRefresh ();
 
 			if (HighLogic.LoadedSceneIsEditor) {
