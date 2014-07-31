@@ -15,6 +15,7 @@ namespace JSIPartUtilities
 		StraightParameter,
 		Resource,
 		CrewCapacity,
+		AttachmentNode,
 	}
 
 	public class Actuator
@@ -31,6 +32,10 @@ namespace JSIPartUtilities
 		private readonly string nameOfParameter = string.Empty;
 		private readonly string resourceName = string.Empty;
 		private readonly float maxAmount = 0;
+
+		private readonly string nodeName = string.Empty;
+		private readonly Vector3 savedNodePosition = Vector3.zero;
+		private readonly Vector3 faraway = new Vector3 (10000, 10000, 10000);
 
 		private PartResource resourcePointer;
 
@@ -171,6 +176,18 @@ namespace JSIPartUtilities
 					throw new ArgumentException ("Bad arguments.");
 				}
 				break;
+			case ActuatorType.AttachmentNode:
+				if (tokens.Length == 1) {
+					nodeName = tokens [0].Trim ();
+					var foundNode = thatPart.findAttachNode (nodeName);
+					if (foundNode == null) {
+						throw new ArgumentException ("Node not found.");
+					}
+					savedNodePosition = foundNode.position;
+				} else {
+					throw new ArgumentException ("Node name missing.");
+				}
+				break;
 			}
 		}
 
@@ -293,6 +310,14 @@ namespace JSIPartUtilities
 						resourcePointer.enabled = true;
 					} 
 
+				}
+				break;
+			case ActuatorType.AttachmentNode:
+				if (HighLogic.LoadedSceneIsEditor) {
+					var foundNode = thatPart.findAttachNode (nodeName);
+					if (foundNode.attachedPart == null) {
+						foundNode.position = newstate ? faraway : savedNodePosition;
+					}
 				}
 				break;
 			}

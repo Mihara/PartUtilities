@@ -41,6 +41,8 @@ namespace JSIPartUtilities
 		public string numericToggles = string.Empty;
 		[KSPField]
 		public string managedResources = string.Empty;
+		[KSPField]
+		public string managedNodes = string.Empty;
 
 		[KSPField]
 		public string controlCrewCapacity = string.Empty;
@@ -100,6 +102,7 @@ namespace JSIPartUtilities
 				ParseSet (numericToggles, ActuatorType.StraightParameter);
 				ParseSet (managedResources, ActuatorType.Resource);
 				ParseSet (controlCrewCapacity, ActuatorType.CrewCapacity);
+				ParseSet (managedNodes, ActuatorType.AttachmentNode);
 			} catch {
 				JUtil.LogErrorMessage (this, "Please check your configuration.");
 				Destroy (this);
