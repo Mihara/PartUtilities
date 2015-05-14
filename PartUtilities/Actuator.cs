@@ -200,8 +200,6 @@ namespace JSIPartUtilities
 		private static float GetParameter (string name, Part thatPart)
 		{
 			switch (name) {
-			case "mass":
-				return thatPart.mass;
 			case "maxTemp":
 				return (float)(thatPart.maxTemp + KelvinToCelsius);
 			case "crashTolerance":
@@ -217,9 +215,6 @@ namespace JSIPartUtilities
 		private static void SetParameter (string name, Part thatPart, float value)
 		{
 			switch (name) {
-			case "mass":
-				thatPart.mass = value;
-				break;
 			case "maxTemp":
 				var newValue = value - KelvinToCelsius;
 				thatPart.maxTemp = newValue > 0 ? newValue : 0;
