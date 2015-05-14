@@ -81,6 +81,11 @@ namespace JSIPartUtilities
 		{
 			return currentState ? costOfBeingEnabled : 0;
 		}
+		
+		float IPartCostModifier.GetModuleCost(float defaultCost)
+		{
+			return currentState ? costOfBeingEnabled : 0;
+		}
 
 		#endregion
 
