@@ -226,11 +226,7 @@ namespace JSIPartUtilities
 				break;
 			case "maxTemp":
 				var newValue = value - KelvinToCelsius;
-				if (newValue > 0) {
-					thatPart.maxTemp = newValue;
-				} else {
-					thatPart.maxTemp = 0;
-				}
+				thatPart.maxTemp = newValue > 0 ? newValue : 0;
 				break;
 			case "crashTolerance":
 				thatPart.crashTolerance = value;
