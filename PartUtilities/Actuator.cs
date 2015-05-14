@@ -206,10 +206,6 @@ namespace JSIPartUtilities
 				return (float)(thatPart.maxTemp + KelvinToCelsius);
 			case "crashTolerance":
 				return thatPart.crashTolerance;
-			case "maximum_drag":
-				return thatPart.maximum_drag;
-			case "minimum_drag":
-				return thatPart.minimum_drag;
 			case "breakingForce":
 				return thatPart.breakingForce;
 			case "breakingTorque":
