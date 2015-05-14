@@ -52,7 +52,7 @@ namespace JSIPartUtilities
 							// Other modes can't have contracts.
 							var agentURLs = new List<string> ();
 							foreach (Contract thatContract in ContractSystem.Instance.Contracts) {
-								if (!agentURLs.Contains (thatContract.Agent.LogoURL))
+								if (!agentURLs.Contains (thatContract.Agent.LogoURL) && thatContract.ContractState == Contract.State.Active)
 									agentURLs.Add (thatContract.Agent.LogoURL);
 							}
 							if (agentURLs.Count > 0) {
