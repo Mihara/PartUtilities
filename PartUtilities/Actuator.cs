@@ -37,6 +37,8 @@ namespace JSIPartUtilities
 		private readonly Vector3 faraway = new Vector3 (10000, 10000, 10000);
 		private readonly Vector3 savedNodePosition = Vector3.zero;
 
+		private const double KelvinToCelsius = -273.15;
+
 		private PartResource resourcePointer;
 
 		private string[] knownStraightParameters = {
@@ -201,7 +203,7 @@ namespace JSIPartUtilities
 			case "mass":
 				return thatPart.mass;
 			case "maxTemp":
-				return thatPart.maxTemp;
+				return (float)(thatPart.maxTemp + KelvinToCelsius);
 			case "crashTolerance":
 				return thatPart.crashTolerance;
 			case "maximum_drag":
@@ -223,7 +225,12 @@ namespace JSIPartUtilities
 				thatPart.mass = value;
 				break;
 			case "maxTemp":
-				thatPart.maxTemp = value;
+				var newValue = value - KelvinToCelsius;
+				if (newValue > 0) {
+					thatPart.maxTemp = newValue;
+				} else {
+					thatPart.maxTemp = 0;
+				}
 				break;
 			case "crashTolerance":
 				thatPart.crashTolerance = value;
