@@ -43,6 +43,8 @@ namespace JSIPartUtilities
 						var allFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Flags");
 						if (allFlags.Count > 0) {
 							defaultFlag = allFlags [UnityEngine.Random.Range (0, allFlags.Count - 1)].name;
+						} else {
+							JUtil.LogMessage (this, "Could not find any flags to pick a random one, wtf?");
 						}
 						break;
 					case "$SPONSOR$":
@@ -57,17 +59,15 @@ namespace JSIPartUtilities
 								defaultFlag = agentURLs [UnityEngine.Random.Range (0, agentURLs.Count - 1)];
 							}
 						} else {
-							var agencyFlags = GameDatabase.Instance.GetAllTexturesInFolderType ("Agencies");
-							if (agencyFlags.Count > 0) {
-								defaultFlag = agencyFlags [UnityEngine.Random.Range (0, agencyFlags.Count - 1)].name;
+							var Agencies = Contracts.Agents.AgentList.Instance.Agencies;
+							if (Agencies.Count > 0) {
+								defaultFlag = Agencies[UnityEngine.Random.Range (0, Agencies.Count - 1)].LogoURL;
 							}
 						}
 						break;
-					default:
-						if (GameDatabase.Instance.ExistsTexture (defaultFlag)) {
-							selectedFlag = defaultFlag;
-						}
-						break;
+					}
+					if (GameDatabase.Instance.ExistsTexture (defaultFlag)) {
+						selectedFlag = defaultFlag;
 					}
 				}
 
@@ -92,6 +92,7 @@ namespace JSIPartUtilities
 			selectedFlag = selected.textureInfo.name;
 			ChangeFlag ();
 			Destroy (fb);
+			JUtil.LogMessage (this, "Selected flag {0}", selectedFlag);
 			flagWasSelected = true;
 		}
 
