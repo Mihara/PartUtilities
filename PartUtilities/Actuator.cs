@@ -42,11 +42,8 @@ namespace JSIPartUtilities
 		private PartResource resourcePointer;
 
 		private string[] knownStraightParameters = {
-			"mass",
 			"maxTemp",
 			"crashTolerance",
-			"maximum_drag",
-			"minimum_drag",
 			"breakingForce",
 			"breakingTorque"
 		};
