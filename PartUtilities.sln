@@ -21,6 +21,6 @@ Global
 		{C55A97E7-9D9B-46D0-9121-8A0D80EA76D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = PartUtilities\PartUtilities.csproj
+		version = 0.3
 	EndGlobalSection
 EndGlobal
