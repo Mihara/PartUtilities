@@ -231,12 +231,6 @@ namespace JSIPartUtilities
 			case "crashTolerance":
 				thatPart.crashTolerance = value;
 				break;
-			case "maximum_drag":
-				thatPart.maximum_drag = value;
-				break;
-			case "minimum_drag":
-				thatPart.minimum_drag = value;
-				break;
 			case "breakingForce":
 				thatPart.breakingForce = value;
 				break;
