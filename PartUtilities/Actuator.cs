@@ -78,16 +78,16 @@ namespace JSIPartUtilities
 				break;
 			case ActuatorType.PartModule:
 				int moduleIndex = int.Parse (remainder.Split (',') [1]);
-				List<PartModule> thoseModules = new List<PartModule> ();
+				var thoseModules = new List<PartModule> ();
 				foreach (PartModule thatModule in thatPart.Modules) {
 					if (thatModule.ClassName == tokens [0].Trim ()) {
 						thoseModules.Add (thatModule);
 					}
-					if (moduleIndex < thoseModules.Count) {
-						controlledModule = thoseModules [moduleIndex];
-					} else {
-						JUtil.LogErrorMessage (this, "Could not find PartModule named {2} number {0} in part {1}", moduleIndex, thatPart.name, tokens [0].Trim ());
-					}
+				}
+				if (moduleIndex < thoseModules.Count) {
+					controlledModule = thoseModules [moduleIndex];
+				} else {
+					JUtil.LogErrorMessage (this, "Could not find PartModule named {2} number {0} in part {1}", moduleIndex, thatPart.name, tokens [0].Trim ());
 				}
 				JUtil.LogMessage (this, "Controlling PartModule named {0}, {1}", controlledModule.ClassName, inverted ? "inverted" : "regular");
 				break;
