@@ -328,6 +328,10 @@ namespace JSIPartUtilities
 				}
 				break;
 			}
+			if (HighLogic.LoadedSceneIsEditor) {
+				// We need to also notify the editor that we changed the part so that Engineers' Toolbox works.
+				GameEvents.onEditorShipModified.Fire(EditorLogic.fetch.ship);
+			}
 		}
 	}
 }
